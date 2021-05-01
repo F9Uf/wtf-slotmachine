@@ -3,7 +3,7 @@
     <Card>
       <Title>Swap</Title>
       <Description>Change your tokens to another tokens</Description>
-      <div class="swap-body mt-10 text-center">
+      <div class="swap-body my-10 text-center">
         <SwapBox
           :balance="token1.balance"
           :currency="token1.currency"
@@ -16,6 +16,10 @@
           </svg>
         </button>
         <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
+      </div>
+      <div class="rate my-3 flex justify-between">
+        <Description>Price</Description>
+        <Description>0.001 ETH per WTF</Description>
       </div>
       <Button type="primary">Swap</Button>
     </Card>
