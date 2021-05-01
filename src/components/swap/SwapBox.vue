@@ -1,7 +1,7 @@
 <template>
   <div class="w-full bg-light rounded-lg py-3 px-5 bg-opacity-30 shadow-inner flex flex-col my-5">
     <div class="flex flex-row justify-between text-primary mb-5">
-      <h5>From</h5>
+      <h5>{{ to ? 'To' : 'From' }}</h5>
       <h5>Balance: {{ computedBalance }}</h5>
     </div>
     <div class="flex flex-row text-dark font-medium text-xl justify-between">
@@ -10,6 +10,7 @@
         type="number"
         placeholder="0.00"
         :disabled="disabled"
+        v-model="value"
       >
       <div class="flex flex-row w-100 box-border">
         <img src="../../assets/currency/eth.png" class="h-7 mr-2" alt="" v-if="currency === 'eth'">
@@ -36,11 +37,27 @@ export default {
     currency: {
       type: String,
       default: 'wtf'
+    },
+    to: {
+      type: Boolean,
+      default: false
+    },
+    amount: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
     computedBalance() {
       return numberToMoney(this.balance, 2)
+    },
+    value: {
+      get() {
+        return this.amount === 0 ? null : this.amount
+      },
+      set(value) {
+        this.$emit('change', value)
+      }
     }
   }
 }

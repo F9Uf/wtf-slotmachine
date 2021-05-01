@@ -4,8 +4,14 @@
       <Title>Swap</Title>
       <Description>Change your tokens to another tokens</Description>
       <div class="swap-body mt-10">
-        <SwapBox />
+        <SwapBox
+          :balance="token1.balance"
+          :currency="token1.currency"
+          @change="onToken1Change"
+        />
+        <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
       </div>
+      {{ token1.amount }}
       <Button type="primary">Swap</Button>
     </Card>
   </div>
@@ -26,7 +32,26 @@ export default {
     Title,
     Description,
     SwapBox
-  }  
+  },
+  data() {
+    return {
+      token1: {
+        balance: 12,
+        currency: 'eth',
+        amount: 0
+      },
+      token2: {
+        balance: 0,
+        currency: 'wtf',
+        amount: 0
+      }
+    }
+  },
+  methods: {
+    onToken1Change(value) {
+      this.token1.amount = value
+    }
+  }
 }
 </script>
 
