@@ -12,8 +12,9 @@
         :disabled="disabled"
       >
       <div class="flex flex-row w-100 box-border">
-        <img src="../../assets/logo.png" class="h-7 mr-2" alt="">
-        WTF
+        <img src="../../assets/currency/eth.png" class="h-7 mr-2" alt="" v-if="currency === 'eth'">
+        <img src="../../assets/currency/wtf.png" class="h-7 mr-2" alt="" v-else>
+        {{ currency === 'eth' ? 'ETH' : 'WTF'}}
       </div>
     </div>
   </div>
@@ -31,6 +32,10 @@ export default {
     balance: {
       type: Number,
       default: 0
+    },
+    currency: {
+      type: String,
+      default: 'wtf'
     }
   },
   computed: {
