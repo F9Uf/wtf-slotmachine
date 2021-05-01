@@ -9,11 +9,11 @@ module.exports = {
         'dark': '#004673',
         'disabled': '#B8B8B8',
         'light': '#8CE6FF'
+      },
+      boxShadow: {
+        'normal': '0px 1px 40px 0px rgba(0,0,0,0.05)',
+        'card': '4px 4px 40px 0px rgb(0,0,0,0.05)'
       }
-    },
-    boxShadow: {
-      'normal': '0px 1px 40px 0px rgba(0,0,0,0.05)',
-      'card': '4px 4px 40px 0px rgb(0,0,0,0.05)'
     },
   },
   variants: {

@@ -3,6 +3,9 @@
     <Card>
       <Title>Swap</Title>
       <Description>Change your tokens to another tokens</Description>
+      <div class="swap-body mt-10">
+        <SwapBox />
+      </div>
       <Button type="primary">Swap</Button>
     </Card>
   </div>
@@ -14,12 +17,15 @@ import Button from '../components/common/Button.vue'
 import Title from '../components/common/Title.vue'
 import Description from '../components/common/Description.vue'
 
+import SwapBox from '../components/swap/SwapBox.vue'
+
 export default {
   components: {
     Card,
     Button,
     Title,
-    Description
+    Description,
+    SwapBox
   }  
 }
 </script>
