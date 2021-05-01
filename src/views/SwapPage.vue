@@ -7,8 +7,10 @@
         <SwapBox
           :balance="token1.balance"
           :currency="token1.currency"
-          @change="onToken1Change"
+          :amount="token1.amount"
+          @amoungChange="onToken1Change"
         />
+
         <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
       </div>
       {{ token1.amount }}

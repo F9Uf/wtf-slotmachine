@@ -55,8 +55,8 @@ export default {
       get() {
         return this.amount === 0 ? null : this.amount
       },
-      set(value) {
-        this.$emit('change', value)
+      set(v) {
+        this.$emit('amoungChange', Number(v))
       }
     }
   }
