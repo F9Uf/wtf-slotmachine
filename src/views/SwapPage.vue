@@ -3,17 +3,20 @@
     <Card>
       <Title>Swap</Title>
       <Description>Change your tokens to another tokens</Description>
-      <div class="swap-body mt-10">
+      <div class="swap-body mt-10 text-center">
         <SwapBox
           :balance="token1.balance"
           :currency="token1.currency"
           :amount="token1.amount"
           @amoungChange="onToken1Change"
         />
-
+        <button class="focus:outline-none bg-dark p-2 rounded-full hover:opacity-90 transition-all" @click="switchToken">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+          </svg>
+        </button>
         <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
       </div>
-      {{ token1.amount }}
       <Button type="primary">Swap</Button>
     </Card>
   </div>
@@ -52,6 +55,17 @@ export default {
   methods: {
     onToken1Change(value) {
       this.token1.amount = value
+    },
+    switchToken() {
+      const temp = {...this.token1};
+      this.token1 = {
+        ...this.token2,
+        amount: 0
+      }
+      this.token2 = {
+        ...temp,
+        amount: 0
+      }
     }
   }
 }
