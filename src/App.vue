@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app">
     <TheHeader />
     <router-view></router-view>
   </div>
@@ -14,3 +14,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.app {
+  background: #F3F3F3;
+}
+</style>
