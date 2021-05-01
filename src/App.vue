@@ -1,6 +1,16 @@
 <template>
   <div class="app">
-    <Modal :title="modalDetail.title" v-if="isShowModal"></Modal>
+    <!-- Connect wallet Modal -->
+    <Modal
+      :title="modalDetail.title"
+      v-if="isShowModal && modalDetail.type === 'CONNECT_WALLET'"
+      @close="closeModal"
+    >
+      <div class="bg-light w-full rounded-lg bg-opacity-50 text-dark cursor-pointer hover:opacity-90 transition-all p-3 my-20 flex items-center">
+        <img src="./assets/metamask.png" class="w-7 rounded-full mr-5" alt="">
+        MetaMask
+      </div> 
+    </Modal>
     <TheHeader />
     <div class="content py-10 px-10 w-full">
       <router-view></router-view>
@@ -23,6 +33,11 @@ export default {
     },
     modalDetail() {
       return this.$store.getters['getModalDetail']
+    }
+  },
+  methods: {
+    closeModal() {
+      this.$store.dispatch('closeModal')
     }
   }
 }
