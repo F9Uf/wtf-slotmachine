@@ -1,7 +1,9 @@
 <template>
   <div class="app">
     <TheHeader />
-    <router-view></router-view>
+    <div class="content py-10 px-10 w-full">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
