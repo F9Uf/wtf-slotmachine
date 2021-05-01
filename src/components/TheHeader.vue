@@ -1,5 +1,5 @@
 <template>
-  <header class="w-full py-5 shadow-normal px-10 flex justify-between items-center">
+  <header class="w-full py-5 shadow-normal px-10 flex justify-between items-center bg-white">
     <div class="left-header">
       <router-link to="/" class="flex items-center">
         <img src="../assets/logo.png" class="h-8 mr-5" alt="">
