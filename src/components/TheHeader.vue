@@ -9,7 +9,15 @@
     <div class="right-header">
       <div class="has-wallet" v-if="isLoginWallet">
         Your wallet:
-        <button class="px-4 py-1 bg-blue-300 rounded-md ml-3 focus:outline-none">{{ shortWalletAddress }}</button>
+        <button class="px-4 py-1 bg-light rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all">{{ shortWalletAddress }}</button>
+      </div>
+      <div class="no-wallet" v-else>
+        <button
+          class="px-4 py-1 bg-dark rounded-md ml-3 focus:outline-none text-white hover:opacity-90 transition-all"
+          @click="connectWallet"
+        >
+          Connect Wallet
+        </button>
       </div>
     </div>
   </header>
@@ -19,13 +27,18 @@
 export default {
   data() {
     return {
-      isLoginWallet: true,
+      isLoginWallet: false,
       walletAddress: '0x100000000000000000000000000000000000DEAD'
     }
   },
   computed: {
     shortWalletAddress() {
       return `${this.walletAddress.slice(0,6)}...${this.walletAddress.slice(-4)}`
+    }
+  },
+  methods: {
+    connectWallet() {
+      this.$store.dispatch('openModalConnect')
     }
   }
 }

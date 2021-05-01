@@ -14,7 +14,20 @@ export default createStore({
     } 
   },
   actions: {
-
+    closeModal({ commit }) {
+      commit('SETMODAL', {
+        isShow: false,
+        title: '',
+        type: ''
+      })
+    },
+    openModalConnect({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Connect to Wallet',
+        type: 'CONNECT_WALLET'
+      })
+    }
   },
   getters: {
     getModalShow(state) {
