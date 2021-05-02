@@ -15,6 +15,7 @@
       </div> 
     </Modal>
     <TheHeader />
+    <TheSwtichMenu :routes="routes" />
     <div class="content py-10 px-10 w-full">
       <router-view></router-view>
     </div>
@@ -24,15 +25,20 @@
 <script>
 import TheHeader from './components/TheHeader.vue'
 import Modal from './components/common/Modal.vue'
+import TheSwtichMenu from './components/TheSwitchMenu.vue'
 
 export default {
   components: {
     TheHeader,
-    Modal
+    Modal,
+    TheSwtichMenu
   },
   data() {
     return {
-      web3: null
+      routes: [
+        { to: '/swap', name: 'SwapPage', text: 'Swap' },
+        { to: '/', name: 'Home', text: 'Slot Machine' }
+      ]
     }
   },
   computed: {
