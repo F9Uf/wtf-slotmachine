@@ -7,11 +7,14 @@
       </router-link>
     </div>
     <div class="right-header">
-      <div class="has-wallet" v-if="isLoginWallet">
+      <div class="has-wallet" v-if="web3Type === 'OK'">
         Your wallet:
         <button class="px-4 py-1 bg-light rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all">{{ shortWalletAddress }}</button>
       </div>
-      <div class="no-wallet" v-else>
+      <div class="has-wallet" v-else-if="web3Type === 'WRONG-NET'">
+        <button class="px-4 py-1 bg-red-500 text-white rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all">Wrong Network</button>
+      </div>
+      <div class="no-wallet" v-else-if="web3Type === 'NOT-CONNECT'">
         <button
           class="px-4 py-1 bg-dark rounded-md ml-3 focus:outline-none text-white hover:opacity-90 transition-all"
           @click="connectWallet"
@@ -25,15 +28,15 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isLoginWallet: false,
-      walletAddress: '0x100000000000000000000000000000000000DEAD'
-    }
-  },
   computed: {
     shortWalletAddress() {
-      return `${this.walletAddress.slice(0,6)}...${this.walletAddress.slice(-4)}`
+      return `${this.accountAddress.slice(0,6)}...${this.accountAddress.slice(-4)}`
+    },
+    accountAddress() {
+      return this.$store.state.account
+    },
+    web3Type() {
+      return this.$store.getters['getWeb3Type']
     }
   },
   methods: {

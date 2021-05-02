@@ -6,7 +6,7 @@
       ${type === 'disabled' ? 'hover:opacity-100' : 'hover:opacity-90'}
     `"
   >
-    Swap
+    <slot></slot>
   </button>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     displayStyle() {
-      const avaliableColor = ['disabled', 'dark', 'secondary', 'primary', 'light'];
+      const avaliableColor = ['disabled', 'dark', 'secondary', 'primary', 'light', 'danger'];
       if (avaliableColor.indexOf(this.type) >= 0) {
         return `bg-${this.type}`
       }
