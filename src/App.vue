@@ -24,7 +24,6 @@
 <script>
 import TheHeader from './components/TheHeader.vue'
 import Modal from './components/common/Modal.vue'
-import { getWeb3 } from './utils/web3'
 
 export default {
   components: {
