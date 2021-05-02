@@ -13,4 +13,5 @@ module.exports = {
       version: "0.8.0",
     },
   },
+  contracts_build_directory: "./src/contracts"
 };
