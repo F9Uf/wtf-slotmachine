@@ -17,7 +17,7 @@
         </button>
         <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
       </div>
-      <div class="rate my-3 flex justify-between">
+      <div class="rate my-3 flex justify-between" v-if="priceRate !== 0">
         <Description>Price</Description>
         <Description>0.001 ETH per WTF</Description>
       </div>
@@ -53,7 +53,8 @@ export default {
         balance: 0,
         currency: 'wtf',
         amount: 0
-      }
+      },
+      priceRate: 0
     }
   },
   methods: {
@@ -77,7 +78,10 @@ export default {
       return this.$store.getters['getWeb3Type']
     },
     getBtnDisplay() {
-      if (this.web3Type === 'OK') return { type: 'primary', text: 'Swap' }
+      if (this.web3Type === 'OK'){
+        if (this.token1.amount === 0 || this.token1.amount === null) return { type: 'disabled', text: 'Enter Token Amount' } 
+        return { type: 'primary', text: 'Swap' }
+      }
       if (this.web3Type === 'WRONG-NET') return { type: 'danger', text: 'Wrong Network' }
       return { type: 'dark', text: 'Connect Wallet'  }
     },
