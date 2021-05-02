@@ -21,7 +21,8 @@
         <Description>Price</Description>
         <Description v-if="token1.currency === 'eth'">{{ priceRate.toFixed(6) }} ETH per WTF</Description>
       </div>
-      <Button :type="getBtnDisplay.type" @click="swap()">{{ getBtnDisplay.text }}</Button>
+      <Button :type="getBtnDisplay.type" @click="swap()" v-if="isApprove">{{ getBtnDisplay.text }}</Button>
+      <Button :type="getBtnDisplay.type" @click="approveDex()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
     </Card>
   </div>
 </template>
@@ -100,6 +101,9 @@ export default {
         const allowance = await this.$store.dispatch('dexTokenAllowance')
         this.isApprove = !!allowance.toNumber()
       }
+    },
+    async approveDex() {
+      await this.$store.dispatch('approveDexToken')
     }
   },
   computed: {

@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import BigNumber from 'bignumber.js'
 import { getDEXAddress, getDEXContract, getWeb3, getWTFContract } from './utils/web3'
 import { getBalanceAmount, getDecimalAmount } from './utils/moneyFormat'
+import { ethers } from 'ethers'
 
 Vue.use(Vuex)
 
@@ -153,6 +154,14 @@ export default new Vuex.Store({
       const wtfContract = await getWTFContract(state.web3)
       const res = await wtfContract.methods.allowance(state.account, getDEXAddress()).call()
       return new BigNumber(res)
+    },
+    async approveDexToken({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const tx = await wtfContract
+        .methods
+        .approve(getDEXAddress(), ethers.constants.MaxUint256)
+        .send({ from: state.account })
+      return tx
     }
   },
   getters: {
