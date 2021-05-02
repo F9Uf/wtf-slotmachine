@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import WTFERC20 from '../contracts/WTFERC20.json'
 
 export const getWeb3 = () => {
   var web3js = window.web3
@@ -9,4 +10,13 @@ export const getWeb3 = () => {
   }
   // there is no metamask
   return null
+}
+
+export const getContract = (web3, constractJson) => {
+  const contractAddress = constractJson.networks[5777].address
+  return new web3.eth.Contract(constractJson.abi, contractAddress)
+}
+
+export const getWTFContract = (web3) => {
+  return getContract(web3, WTFERC20)
 }
