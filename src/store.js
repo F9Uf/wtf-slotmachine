@@ -57,7 +57,7 @@ export default new Vuex.Store({
       await dispatch('getAccount')
       await dispatch('getChain')
       await dispatch('getEthBalance')
-      await dispatch('watchEthBalance')
+      await dispatch('watchNewBlock')
       await dispatch('getWtfBalance')
     },
     async injectWeb3({ commit, dispatch }) {
@@ -95,12 +95,13 @@ export default new Vuex.Store({
         await dispatch('initState')
       })
     },
-    async watchEthBalance({ state, dispatch }) {
+    async watchNewBlock({ state, dispatch }) {
       return state.web3.eth.subscribe('newBlockHeaders', async (err, result) => {
         if (err) {
           console.log(err);
         } else {
           dispatch('getEthBalance')
+          dispatch('getWtfBalance')
         }
       })
     },
