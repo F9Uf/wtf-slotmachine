@@ -15,13 +15,13 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
           </svg>
         </button>
-        <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
+        <SwapBox :balance="token2.balance" :currency="token2.currency" :amount="token2.amount"  to disabled />
       </div>
       <div class="rate my-3 flex justify-between" v-if="priceRate !== 0">
         <Description>Price</Description>
-        <Description>0.001 ETH per WTF</Description>
+        <Description v-if="token1.currency === 'eth'">{{ priceRate.toFixed(6) }} ETH per WTF</Description>
       </div>
-      <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
+      <Button :type="getBtnDisplay.type" @click="swap()">{{ getBtnDisplay.text }}</Button>
     </Card>
   </div>
 </template>
@@ -58,8 +58,15 @@ export default {
     }
   },
   methods: {
-    onToken1Change(value) {
+    async onToken1Change(value) {
       this.token1.amount = value
+      if (this.token1.currency === 'eth') {
+        const estimateToken = await this.$store.dispatch('estimateEthToToken', value)
+        this.token2.amount = estimateToken /  Math.pow(10, 18)
+        const rate = this.token1.amount / this.token2.amount
+        this.priceRate =  rate > 0 ? rate : 0
+        // TODO: fix BigNumber
+      }
     },
     switchToken() {
       const temp = {...this.token1};
@@ -71,6 +78,13 @@ export default {
         ...temp,
         amount: 0
       }
+    },
+    async swap() {
+      if (this.token1.currency === 'eth') {
+        await this.$store.dispatch('swapEthToToken', this.token1.amount)
+      }
+      this.token1.amount = 0;
+      this.token2.amount = 0;
     }
   },
   computed: {
@@ -97,7 +111,7 @@ export default {
       if (this.token1.currency === 'wtf') this.token1.balance = newV.wtfBalance
       if (this.token2.currency === 'wtf') this.token2.balance = newV.wtfBalance
     }
-  }
+  },
 }
 </script>
 

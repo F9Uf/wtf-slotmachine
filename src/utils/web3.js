@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 import WTFERC20 from '../contracts/WTFERC20.json'
+import DEX from '../contracts/DEX.json'
 
 export const getWeb3 = () => {
   var web3js = window.web3
@@ -19,4 +20,8 @@ export const getContract = (web3, constractJson) => {
 
 export const getWTFContract = (web3) => {
   return getContract(web3, WTFERC20)
+}
+
+export const getDEXContract = (web3) => {
+  return getContract(web3, DEX)
 }

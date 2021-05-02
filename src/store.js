@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getWeb3, getWTFContract } from './utils/web3'
+import { getDEXContract, getWeb3, getWTFContract } from './utils/web3'
 import { strWeiToEth } from './utils/moneyFormat'
 
 Vue.use(Vuex)
@@ -111,11 +111,28 @@ export default new Vuex.Store({
       await commit('SETETHBALANCE', balance)
     },
     async getWtfBalance({ state, commit }) {
-      const wtfContract = await getWTFContract(state.web3);
-      const balanceStr = await wtfContract.methods.balanceOf(state.account).call();
+      const wtfContract = await getWTFContract(state.web3)
+      const balanceStr = await wtfContract.methods.balanceOf(state.account).call()
       const balance = strWeiToEth(balanceStr.toString())
       commit('SETWTFBALANCE', balance)
     },
+    async swapEthToToken({ state }, ethAmount) {
+      try {
+        const dexContract = await getDEXContract(state.web3)
+        const ethToWei = ethAmount * Math.pow(10, 18);
+        await dexContract.methods.ethToToken().send({ from: state.account, value: ethToWei });
+        return true;
+      } catch(e) {
+        return false;
+      }
+    },
+    async estimateEthToToken({ state }, ethAmount) {
+      const dexContract = await getDEXContract(state.web3)
+      const ethToWei = ethAmount * Math.pow(10, 18);
+      const result = await dexContract.methods.ethToToken().call({ from: state.account, value: ethToWei })
+      return result;
+      // TODO: fix BigNumber
+    }
   },
   getters: {
     getModalShow(state) {
