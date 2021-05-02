@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       token1: {
-        balance: 12,
+        balance: 0,
         currency: 'eth',
         amount: 0
       },
@@ -80,6 +80,15 @@ export default {
       if (this.web3Type === 'OK') return { type: 'primary', text: 'Swap' }
       if (this.web3Type === 'WRONG-NET') return { type: 'danger', text: 'Wrong Network' }
       return { type: 'dark', text: 'Connect Wallet'  }
+    },
+    accountDetail() {
+      return this.$store.getters['getAccountDetail']
+    }
+  },
+  watch: {
+    accountDetail(newV) {
+      if (this.token1.currency === 'eth') this.token1.balance = newV.ethBalance
+      if (this.token2.currency === 'eth') this.token1.balance = newV.ethBalance
     }
   }
 }

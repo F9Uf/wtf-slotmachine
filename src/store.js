@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { getWeb3 } from './utils/web3'
+import { strWeiToEth } from './utils/moneyFormat'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,8 @@ export default new Vuex.Store({
     },
     web3: null,
     account: null,
-    isCorrectChain: true
+    isCorrectChain: true,
+    ethBalance: 0
   },
   mutations: {
     SETMODAL(state, payload) {
@@ -27,6 +29,9 @@ export default new Vuex.Store({
     },
     SETISCORRECTCHAIN(state, payload) {
       state.isCorrectChain = payload
+    },
+    SETETHBALANCE(state, balance) {
+      state.ethBalance = balance
     }
   },
   actions: {
@@ -47,6 +52,8 @@ export default new Vuex.Store({
     async initState({ dispatch }) {
       await dispatch('getAccount')
       await dispatch('getChain')
+      await dispatch('getEthBalance')
+      await dispatch('watchEthBalance')
     },
     async injectWeb3({ commit, dispatch }) {
       const web3 = new getWeb3()
@@ -82,6 +89,20 @@ export default new Vuex.Store({
       return state.web3.currentProvider.on('chainChanged', async chainId => {
         await dispatch('initState')
       })
+    },
+    async watchEthBalance({ state, dispatch }) {
+      return state.web3.eth.subscribe('newBlockHeaders', async (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          dispatch('getEthBalance')
+        }
+      })
+    },
+    async getEthBalance({ state, commit }) {
+      const balanceStr = await state.web3.eth.getBalance(state.account)
+      const balance = strWeiToEth(balanceStr)
+      await commit('SETETHBALANCE', balance)
     }
   },
   getters: {
@@ -98,6 +119,12 @@ export default new Vuex.Store({
       if (state.account !== null && !state.isCorrectChain) return 'WRONG-NET'
       if (state.account === null) return 'NOT-CONNECT'
       return 'ERROR'
+    },
+    getAccountDetail(state) {
+      return {
+        address: state.account,
+        ethBalance: state.ethBalance
+      }
     }
   }
 })
