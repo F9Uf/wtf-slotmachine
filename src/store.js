@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import BigNumber from 'bignumber.js'
 import { getDEXContract, getWeb3, getWTFContract } from './utils/web3'
-import { strWeiToEth } from './utils/moneyFormat'
+import { getBalanceAmount, getDecimalAmount, strWeiToEth } from './utils/moneyFormat'
 
 Vue.use(Vuex)
 
@@ -119,8 +120,8 @@ export default new Vuex.Store({
     async swapEthToToken({ state }, ethAmount) {
       try {
         const dexContract = await getDEXContract(state.web3)
-        const ethToWei = ethAmount * Math.pow(10, 18);
-        await dexContract.methods.ethToToken().send({ from: state.account, value: ethToWei });
+        const convertEthAmount = getDecimalAmount(new BigNumber(ethAmount))
+        await dexContract.methods.ethToToken().send({ from: state.account, value: convertEthAmount });
         return true;
       } catch(e) {
         return false;
@@ -128,11 +129,26 @@ export default new Vuex.Store({
     },
     async estimateEthToToken({ state }, ethAmount) {
       const dexContract = await getDEXContract(state.web3)
-      const ethToWei = ethAmount * Math.pow(10, 18);
-      const result = await dexContract.methods.ethToToken().call({ from: state.account, value: ethToWei })
-      return result;
-      // TODO: fix BigNumber
-    }
+      const convertEthAmount = getDecimalAmount(new BigNumber(ethAmount))
+      const result = await dexContract.methods.ethToToken().call({ from: state.account, value: convertEthAmount })
+      return getBalanceAmount(result);
+    },
+    async swapTokenToEth({ state }, tokenAmount) {
+      try {
+        const dexContract = await getDEXContract(state.web3)
+        const convertTokenAmount = getDecimalAmount(new BigNumber(tokenAmount))
+        await dexContract.methods.tokenToEth(convertTokenAmount).send({ from: state.account });
+        return true;
+      } catch(e) {
+        return false;
+      }
+    },
+    async estimateTokenToEth({ state }, tokenAmount) {
+      const dexContract = await getDEXContract(state.web3)
+      const convertTokenAmount = getDecimalAmount(new BigNumber(tokenAmount))
+      const result = await dexContract.methods.tokenToEth(convertTokenAmount).call({ from: state.account })
+      return getBalanceAmount(result);
+    },
   },
   getters: {
     getModalShow(state) {

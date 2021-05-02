@@ -60,12 +60,14 @@ export default {
   methods: {
     async onToken1Change(value) {
       this.token1.amount = value
+      this.priceRate = 0
       if (this.token1.currency === 'eth') {
         const estimateToken = await this.$store.dispatch('estimateEthToToken', value)
-        this.token2.amount = estimateToken /  Math.pow(10, 18)
-        const rate = this.token1.amount / this.token2.amount
-        this.priceRate =  rate > 0 ? rate : 0
-        // TODO: fix BigNumber
+        this.token2.amount = estimateToken.toNumber()
+        
+      } else if (this.token1.currency === 'wtf') {
+        const estimateEth = await this.$store.dispatch('estimateTokenToEth', value)
+        this.token2.amount = estimateEth.toNumber()
       }
     },
     switchToken() {
@@ -80,8 +82,11 @@ export default {
       }
     },
     async swap() {
+      if (this.token1.amount === 0) return;
       if (this.token1.currency === 'eth') {
         await this.$store.dispatch('swapEthToToken', this.token1.amount)
+      } else if (this.token1.currency === 'wtf') {
+        await this.$store.dispatch('swapTokenToEth', this.token1.amount)
       }
       this.token1.amount = 0;
       this.token2.amount = 0;
