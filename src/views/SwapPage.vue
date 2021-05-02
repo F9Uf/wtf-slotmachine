@@ -89,6 +89,9 @@ export default {
     accountDetail(newV) {
       if (this.token1.currency === 'eth') this.token1.balance = newV.ethBalance
       if (this.token2.currency === 'eth') this.token1.balance = newV.ethBalance
+
+      if (this.token1.currency === 'wtf') this.token1.balance = newV.wtfBalance
+      if (this.token2.currency === 'wtf') this.token2.balance = newV.wtfBalance
     }
   }
 }

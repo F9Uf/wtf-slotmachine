@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getWeb3 } from './utils/web3'
+import { getWeb3, getWTFContract } from './utils/web3'
 import { strWeiToEth } from './utils/moneyFormat'
 
 Vue.use(Vuex)
@@ -15,7 +15,8 @@ export default new Vuex.Store({
     web3: null,
     account: null,
     isCorrectChain: true,
-    ethBalance: 0
+    ethBalance: 0,
+    wtfBalance: 0
   },
   mutations: {
     SETMODAL(state, payload) {
@@ -32,6 +33,9 @@ export default new Vuex.Store({
     },
     SETETHBALANCE(state, balance) {
       state.ethBalance = balance
+    },
+    SETWTFBALANCE(state, balance) {
+      state.wtfBalance = balance
     }
   },
   actions: {
@@ -54,6 +58,7 @@ export default new Vuex.Store({
       await dispatch('getChain')
       await dispatch('getEthBalance')
       await dispatch('watchEthBalance')
+      await dispatch('getWtfBalance')
     },
     async injectWeb3({ commit, dispatch }) {
       const web3 = new getWeb3()
@@ -103,7 +108,13 @@ export default new Vuex.Store({
       const balanceStr = await state.web3.eth.getBalance(state.account)
       const balance = strWeiToEth(balanceStr)
       await commit('SETETHBALANCE', balance)
-    }
+    },
+    async getWtfBalance({ state, commit }) {
+      const wtfContract = await getWTFContract(state.web3);
+      const balanceStr = await wtfContract.methods.balanceOf(state.account).call();
+      const balance = strWeiToEth(balanceStr.toString())
+      commit('SETWTFBALANCE', balance)
+    },
   },
   getters: {
     getModalShow(state) {
@@ -123,7 +134,8 @@ export default new Vuex.Store({
     getAccountDetail(state) {
       return {
         address: state.account,
-        ethBalance: state.ethBalance
+        ethBalance: state.ethBalance,
+        wtfBalance: state.wtfBalance
       }
     }
   }
