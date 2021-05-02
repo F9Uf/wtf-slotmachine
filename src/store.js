@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import BigNumber from 'bignumber.js'
-import { getDEXContract, getWeb3, getWTFContract } from './utils/web3'
-import { getBalanceAmount, getDecimalAmount, strWeiToEth } from './utils/moneyFormat'
+import { getDEXAddress, getDEXContract, getWeb3, getWTFContract } from './utils/web3'
+import { getBalanceAmount, getDecimalAmount } from './utils/moneyFormat'
 
 Vue.use(Vuex)
 
@@ -57,8 +57,8 @@ export default new Vuex.Store({
     async initState({ dispatch }) {
       await dispatch('getAccount')
       await dispatch('getChain')
-      await dispatch('getEthBalance')
       await dispatch('watchNewBlock')
+      await dispatch('getEthBalance')
       await dispatch('getWtfBalance')
     },
     async injectWeb3({ commit, dispatch }) {
@@ -108,13 +108,13 @@ export default new Vuex.Store({
     },
     async getEthBalance({ state, commit }) {
       const balanceStr = await state.web3.eth.getBalance(state.account)
-      const balance = strWeiToEth(balanceStr)
+      const balance = getBalanceAmount(balanceStr).toNumber()
       await commit('SETETHBALANCE', balance)
     },
     async getWtfBalance({ state, commit }) {
       const wtfContract = await getWTFContract(state.web3)
       const balanceStr = await wtfContract.methods.balanceOf(state.account).call()
-      const balance = strWeiToEth(balanceStr.toString())
+      const balance = getBalanceAmount(balanceStr.toString()).toNumber()
       commit('SETWTFBALANCE', balance)
     },
     async swapEthToToken({ state }, ethAmount) {
@@ -149,6 +149,11 @@ export default new Vuex.Store({
       const result = await dexContract.methods.tokenToEth(convertTokenAmount).call({ from: state.account })
       return getBalanceAmount(result);
     },
+    async dexTokenAllowance({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const res = await wtfContract.methods.allowance(state.account, getDEXAddress()).call()
+      return new BigNumber(res)
+    }
   },
   getters: {
     getModalShow(state) {
@@ -171,6 +176,6 @@ export default new Vuex.Store({
         ethBalance: state.ethBalance,
         wtfBalance: state.wtfBalance
       }
-    }
+    },
   }
 })

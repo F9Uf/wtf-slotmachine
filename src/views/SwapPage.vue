@@ -54,7 +54,8 @@ export default {
         currency: 'wtf',
         amount: 0
       },
-      priceRate: 0
+      priceRate: 0,
+      isApprove: true
     }
   },
   methods: {
@@ -70,7 +71,7 @@ export default {
         this.token2.amount = estimateEth.toNumber()
       }
     },
-    switchToken() {
+    async switchToken() {
       const temp = {...this.token1};
       this.token1 = {
         ...this.token2,
@@ -80,6 +81,9 @@ export default {
         ...temp,
         amount: 0
       }
+
+      await this.setIsApprove()
+      
     },
     async swap() {
       if (this.token1.amount === 0) return;
@@ -90,6 +94,12 @@ export default {
       }
       this.token1.amount = 0;
       this.token2.amount = 0;
+    },
+    async setIsApprove() {
+      if (this.token1.currency === 'wtf') {
+        const allowance = await this.$store.dispatch('dexTokenAllowance')
+        this.isApprove = !!allowance.toNumber()
+      }
     }
   },
   computed: {
@@ -98,6 +108,7 @@ export default {
     },
     getBtnDisplay() {
       if (this.web3Type === 'OK'){
+        if (this.token1.currency === 'wtf' && !this.isApprove) return { type: 'dark', text: 'Approve Contract'}
         if (this.token1.amount === 0 || this.token1.amount === null) return { type: 'disabled', text: 'Enter Token Amount' } 
         return { type: 'primary', text: 'Swap' }
       }
@@ -106,7 +117,7 @@ export default {
     },
     accountDetail() {
       return this.$store.getters['getAccountDetail']
-    }
+    },
   },
   watch: {
     accountDetail(newV) {
@@ -115,8 +126,19 @@ export default {
 
       if (this.token1.currency === 'wtf') this.token1.balance = newV.wtfBalance
       if (this.token2.currency === 'wtf') this.token2.balance = newV.wtfBalance
-    }
+
+      this.setIsApprove()
+    },
   },
+  created() {
+    if (this.token1.currency === 'eth') this.token1.balance = this.accountDetail.ethBalance
+    if (this.token2.currency === 'eth') this.token1.balance = this.accountDetail.ethBalance
+
+    if (this.token1.currency === 'wtf') this.token1.balance = this.accountDetail.wtfBalance
+    if (this.token2.currency === 'wtf') this.token2.balance = this.accountDetail.wtfBalance
+
+    this.setIsApprove()
+  }
 }
 </script>
 

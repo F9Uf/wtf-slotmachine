@@ -13,13 +13,25 @@ export const getWeb3 = () => {
   return null
 }
 
+export const getAdrress = (contractJson) => {
+  return contractJson.networks[5777].address
+}
+
 export const getContract = (web3, constractJson) => {
-  const contractAddress = constractJson.networks[5777].address
+  const contractAddress = getAdrress(constractJson)
   return new web3.eth.Contract(constractJson.abi, contractAddress)
+}
+
+export const getWTFAddress = () => {
+  return getAdrress(WTFERC20)
 }
 
 export const getWTFContract = (web3) => {
   return getContract(web3, WTFERC20)
+}
+
+export const getDEXAddress = () => {
+  return getAdrress(DEX)
 }
 
 export const getDEXContract = (web3) => {
