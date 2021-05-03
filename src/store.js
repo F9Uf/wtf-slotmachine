@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getWeb3 } from './utils/web3'
-import { strWeiToEth } from './utils/moneyFormat'
+import BigNumber from 'bignumber.js'
+import { getDEXAddress, getDEXContract, getWeb3, getWTFContract } from './utils/web3'
+import { getBalanceAmount, getDecimalAmount } from './utils/moneyFormat'
+import { ethers } from 'ethers'
 
 Vue.use(Vuex)
 
@@ -15,7 +17,8 @@ export default new Vuex.Store({
     web3: null,
     account: null,
     isCorrectChain: true,
-    ethBalance: 0
+    ethBalance: 0,
+    wtfBalance: 0
   },
   mutations: {
     SETMODAL(state, payload) {
@@ -32,6 +35,9 @@ export default new Vuex.Store({
     },
     SETETHBALANCE(state, balance) {
       state.ethBalance = balance
+    },
+    SETWTFBALANCE(state, balance) {
+      state.wtfBalance = balance
     }
   },
   actions: {
@@ -52,8 +58,9 @@ export default new Vuex.Store({
     async initState({ dispatch }) {
       await dispatch('getAccount')
       await dispatch('getChain')
+      await dispatch('watchNewBlock')
       await dispatch('getEthBalance')
-      await dispatch('watchEthBalance')
+      await dispatch('getWtfBalance')
     },
     async injectWeb3({ commit, dispatch }) {
       const web3 = new getWeb3()
@@ -90,19 +97,71 @@ export default new Vuex.Store({
         await dispatch('initState')
       })
     },
-    async watchEthBalance({ state, dispatch }) {
+    async watchNewBlock({ state, dispatch }) {
       return state.web3.eth.subscribe('newBlockHeaders', async (err, result) => {
         if (err) {
           console.log(err);
         } else {
           dispatch('getEthBalance')
+          dispatch('getWtfBalance')
         }
       })
     },
     async getEthBalance({ state, commit }) {
       const balanceStr = await state.web3.eth.getBalance(state.account)
-      const balance = strWeiToEth(balanceStr)
+      const balance = getBalanceAmount(balanceStr).toNumber()
       await commit('SETETHBALANCE', balance)
+    },
+    async getWtfBalance({ state, commit }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const balanceStr = await wtfContract.methods.balanceOf(state.account).call()
+      const balance = getBalanceAmount(balanceStr.toString()).toNumber()
+      commit('SETWTFBALANCE', balance)
+    },
+    async swapEthToToken({ state }, ethAmount) {
+      try {
+        const dexContract = await getDEXContract(state.web3)
+        const convertEthAmount = getDecimalAmount(new BigNumber(ethAmount))
+        await dexContract.methods.ethToToken().send({ from: state.account, value: convertEthAmount });
+        return true;
+      } catch(e) {
+        return false;
+      }
+    },
+    async estimateEthToToken({ state }, ethAmount) {
+      const dexContract = await getDEXContract(state.web3)
+      const convertEthAmount = getDecimalAmount(new BigNumber(ethAmount))
+      const result = await dexContract.methods.ethToToken().call({ from: state.account, value: convertEthAmount })
+      return getBalanceAmount(result);
+    },
+    async swapTokenToEth({ state }, tokenAmount) {
+      try {
+        const dexContract = await getDEXContract(state.web3)
+        const convertTokenAmount = getDecimalAmount(new BigNumber(tokenAmount))
+        await dexContract.methods.tokenToEth(convertTokenAmount).send({ from: state.account });
+        return true;
+      } catch(e) {
+        return false;
+      }
+    },
+    async estimateTokenToEth({ state }, tokenAmount) {
+      const dexContract = await getDEXContract(state.web3)
+      const convertTokenAmount = getDecimalAmount(new BigNumber(tokenAmount))
+      const result = await dexContract.methods.tokenToEth(convertTokenAmount).call({ from: state.account })
+      return getBalanceAmount(result);
+    },
+    async dexTokenAllowance({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const res = await wtfContract.methods.allowance(state.account, getDEXAddress()).call()
+      return new BigNumber(res)
+    },
+    async approveDexToken({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const tx = await wtfContract
+        .methods
+        .approve(getDEXAddress(), ethers.constants.MaxUint256)
+        .send({ from: state.account })
+      return tx
     }
   },
   getters: {
@@ -123,8 +182,9 @@ export default new Vuex.Store({
     getAccountDetail(state) {
       return {
         address: state.account,
-        ethBalance: state.ethBalance
+        ethBalance: state.ethBalance,
+        wtfBalance: state.wtfBalance
       }
-    }
+    },
   }
 })

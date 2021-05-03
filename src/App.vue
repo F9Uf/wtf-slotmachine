@@ -15,24 +15,35 @@
       </div> 
     </Modal>
     <TheHeader />
+    <TheSwtichMenu :routes="routes" />
     <div class="content py-10 px-10 w-full">
       <router-view></router-view>
     </div>
+    <button class="my-5 mx-10" @click="addWtfTokenToMetaMask">Click to add WTF token to Metamask</button>
   </div>
 </template>
 
 <script>
 import TheHeader from './components/TheHeader.vue'
 import Modal from './components/common/Modal.vue'
+import TheSwtichMenu from './components/TheSwitchMenu.vue'
+
+import { addTokenToMetamask } from './utils/token'
+import { getWTFAddress } from './utils/web3'
+
 
 export default {
   components: {
     TheHeader,
-    Modal
+    Modal,
+    TheSwtichMenu
   },
   data() {
     return {
-      web3: null
+      routes: [
+        { to: '/swap', name: 'SwapPage', text: 'Swap' },
+        { to: '/', name: 'Home', text: 'Slot Machine' }
+      ]
     }
   },
   computed: {
@@ -51,7 +62,10 @@ export default {
       await this.$store.dispatch('connectWallet')
     },
     async disconnectWallet() {
-    }
+    },
+    async addWtfTokenToMetaMask() {
+      await addTokenToMetamask(getWTFAddress(), 'WTF', 'http://localhost:8080/token_wtf.png')
+    },
   },
   async mounted() {
     await this.$store.dispatch('injectWeb3')

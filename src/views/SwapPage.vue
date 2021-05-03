@@ -15,13 +15,14 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
           </svg>
         </button>
-        <SwapBox :balance="token2.balance" :currency="token2.currency"  to disabled />
+        <SwapBox :balance="token2.balance" :currency="token2.currency" :amount="token2.amount"  to disabled />
       </div>
-      <div class="rate my-3 flex justify-between">
+      <div class="rate my-3 flex justify-between" v-if="priceRate !== 0">
         <Description>Price</Description>
-        <Description>0.001 ETH per WTF</Description>
+        <Description v-if="token1.currency === 'eth'">{{ priceRate.toFixed(6) }} ETH per WTF</Description>
       </div>
-      <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
+      <Button :type="getBtnDisplay.type" @click="swap()" v-if="isApprove">{{ getBtnDisplay.text }}</Button>
+      <Button :type="getBtnDisplay.type" @click="approveDex()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
     </Card>
   </div>
 </template>
@@ -53,14 +54,25 @@ export default {
         balance: 0,
         currency: 'wtf',
         amount: 0
-      }
+      },
+      priceRate: 0,
+      isApprove: true
     }
   },
   methods: {
-    onToken1Change(value) {
+    async onToken1Change(value) {
       this.token1.amount = value
+      this.priceRate = 0
+      if (this.token1.currency === 'eth') {
+        const estimateToken = await this.$store.dispatch('estimateEthToToken', value)
+        this.token2.amount = estimateToken.toNumber()
+        
+      } else if (this.token1.currency === 'wtf') {
+        const estimateEth = await this.$store.dispatch('estimateTokenToEth', value)
+        this.token2.amount = estimateEth.toNumber()
+      }
     },
-    switchToken() {
+    async switchToken() {
       const temp = {...this.token1};
       this.token1 = {
         ...this.token2,
@@ -70,6 +82,28 @@ export default {
         ...temp,
         amount: 0
       }
+
+      await this.setIsApprove()
+      
+    },
+    async swap() {
+      if (this.token1.amount === 0) return;
+      if (this.token1.currency === 'eth') {
+        await this.$store.dispatch('swapEthToToken', this.token1.amount)
+      } else if (this.token1.currency === 'wtf') {
+        await this.$store.dispatch('swapTokenToEth', this.token1.amount)
+      }
+      this.token1.amount = 0;
+      this.token2.amount = 0;
+    },
+    async setIsApprove() {
+      if (this.token1.currency === 'wtf') {
+        const allowance = await this.$store.dispatch('dexTokenAllowance')
+        this.isApprove = !!allowance.toNumber()
+      }
+    },
+    async approveDex() {
+      await this.$store.dispatch('approveDexToken')
     }
   },
   computed: {
@@ -77,19 +111,37 @@ export default {
       return this.$store.getters['getWeb3Type']
     },
     getBtnDisplay() {
-      if (this.web3Type === 'OK') return { type: 'primary', text: 'Swap' }
+      if (this.web3Type === 'OK'){
+        if (this.token1.currency === 'wtf' && !this.isApprove) return { type: 'dark', text: 'Approve Contract'}
+        if (this.token1.amount === 0 || this.token1.amount === null) return { type: 'disabled', text: 'Enter Token Amount' } 
+        return { type: 'primary', text: 'Swap' }
+      }
       if (this.web3Type === 'WRONG-NET') return { type: 'danger', text: 'Wrong Network' }
       return { type: 'dark', text: 'Connect Wallet'  }
     },
     accountDetail() {
       return this.$store.getters['getAccountDetail']
-    }
+    },
   },
   watch: {
     accountDetail(newV) {
       if (this.token1.currency === 'eth') this.token1.balance = newV.ethBalance
       if (this.token2.currency === 'eth') this.token1.balance = newV.ethBalance
-    }
+
+      if (this.token1.currency === 'wtf') this.token1.balance = newV.wtfBalance
+      if (this.token2.currency === 'wtf') this.token2.balance = newV.wtfBalance
+
+      this.setIsApprove()
+    },
+  },
+  created() {
+    if (this.token1.currency === 'eth') this.token1.balance = this.accountDetail.ethBalance
+    if (this.token2.currency === 'eth') this.token1.balance = this.accountDetail.ethBalance
+
+    if (this.token1.currency === 'wtf') this.token1.balance = this.accountDetail.wtfBalance
+    if (this.token2.currency === 'wtf') this.token2.balance = this.accountDetail.wtfBalance
+
+    this.setIsApprove()
   }
 }
 </script>

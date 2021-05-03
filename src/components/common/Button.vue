@@ -5,6 +5,7 @@
       ${type === 'disabled' ? 'cursor-not-allowed' : 'cursor-pointer'}
       ${type === 'disabled' ? 'hover:opacity-100' : 'hover:opacity-90'}
     `"
+    @click="$emit('click')"
   >
     <slot></slot>
   </button>
