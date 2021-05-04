@@ -19,7 +19,10 @@
       <Card class="grid grid-rows-3 grid-flow-col">
         <Title>Slot Machine</Title>
         <div class="slot grid grid-cols-11">
-          <div
+          <div :class="setLayout(index)" v-for="(slotPic, index) in slotPics" :key="index">
+            <img :src="getSlotCoinPics(slotPic)" alt="" />
+          </div>
+          <!-- <div
             class="col-start-1 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
           >
             <img src="../assets/currency/btc_slot.png" alt="" />
@@ -33,7 +36,7 @@
             class="col-start-9 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
           >
             <img src="../assets/currency/btc_slot.png" alt="" />
-          </div>
+          </div> -->
         </div>
         <div class="bottom mt-10">
           <div class="float-right mb-5">
@@ -152,7 +155,13 @@ export default {
           c2: "btc",
           c3: "btc"
         }
+      ],
+      slotPics : [
+        "btc_slot",
+        "btc_slot",
+        "btc_slot"
       ]
+        
     }
   },
   computed: {
@@ -162,6 +171,14 @@ export default {
         return { type: "danger", text: "Wrong Network" };
       return { type: "dark", text: "Connect Wallet" };
     },
+    getSlotCoinPics(pic) {
+      return require('../assets/currency/'+ pic + '.png')
+    },
+    setLayout(index) {
+      let start = 4*index + 1;
+      start = start.toString()
+      return 'col-start-'+ start +'col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg'
+    }
   },
 };
 </script>
