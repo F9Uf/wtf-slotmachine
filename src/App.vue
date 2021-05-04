@@ -14,6 +14,19 @@
         MetaMask
       </div> 
     </Modal>
+    <!-- Show account Modal -->
+    <Modal
+      :title="modalDetail.title"
+      v-if="isShowModal && modalDetail.type === 'ACCOUNT_WALLET'"
+      @close="closeModal"
+    >
+      <div
+        class="w-full text-dark justify-center my-20 flex items-center"
+      >
+        <h1 class="text-2xl font-semibold">{{ accountDetail.address }}</h1>
+      </div> 
+      <Button type="primary">Disconnect</Button>
+    </Modal>
     <TheHeader />
     <TheSwtichMenu :routes="routes" />
     <div class="content py-10 px-10 w-full">
@@ -27,6 +40,7 @@
 import TheHeader from './components/TheHeader.vue'
 import Modal from './components/common/Modal.vue'
 import TheSwtichMenu from './components/TheSwitchMenu.vue'
+import Button from './components/common/Button.vue'
 
 import { addTokenToMetamask } from './utils/token'
 import { getWTFAddress } from './utils/web3'
@@ -36,7 +50,8 @@ export default {
   components: {
     TheHeader,
     Modal,
-    TheSwtichMenu
+    TheSwtichMenu,
+    Button
   },
   data() {
     return {
@@ -52,6 +67,9 @@ export default {
     },
     modalDetail() {
       return this.$store.getters['getModalDetail']
+    },
+    accountDetail() {
+      return this.$store.getters['getAccountDetail']
     }
   },
   methods: {

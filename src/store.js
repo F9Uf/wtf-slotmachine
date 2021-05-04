@@ -55,6 +55,13 @@ export default new Vuex.Store({
         type: 'CONNECT_WALLET'
       })
     },
+    openModalAccount({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Your Wallet',
+        type: 'ACCOUNT_WALLET'
+      })
+    },
     async initState({ dispatch }) {
       await dispatch('getAccount')
       await dispatch('getChain')

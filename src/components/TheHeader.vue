@@ -9,7 +9,12 @@
     <div class="right-header">
       <div class="has-wallet" v-if="web3Type === 'OK'">
         Your wallet:
-        <button class="px-4 py-1 bg-light rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all">{{ shortWalletAddress }}</button>
+        <button
+          class="px-4 py-1 bg-light rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all"
+          @click="showAcount"
+        >
+          {{ shortWalletAddress }}
+        </button>
       </div>
       <div class="has-wallet" v-else-if="web3Type === 'WRONG-NET'">
         <button class="px-4 py-1 bg-red-500 text-white rounded-md ml-3 focus:outline-none hover:opacity-90 transition-all">Wrong Network</button>
@@ -42,6 +47,9 @@ export default {
   methods: {
     connectWallet() {
       this.$store.dispatch('openModalConnect')
+    },
+    showAcount() {
+      this.$store.dispatch('openModalAccount')
     }
   }
 }
