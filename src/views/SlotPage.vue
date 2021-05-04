@@ -60,7 +60,7 @@
         </Card>
       </div>
       <div class="rules my-5">
-        <h1>Rules & rewards</h1>
+        <h1>Rules & rewardss</h1>
         <p>
           You will get a award only if your all slots are not different, but the
           rewards are not equal in each picture. So the rewards are shown below:
