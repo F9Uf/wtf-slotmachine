@@ -16,7 +16,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: false
+      default: 'primary'
     }
   },
   computed: {

@@ -33,7 +33,7 @@ export default {
   props: {
     title: {
       type: String,
-      defaul: ''
+      default: ''
     }
   },
   methods: {
