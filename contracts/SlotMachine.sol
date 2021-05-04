@@ -9,6 +9,7 @@ contract SlotMachine {
   uint256 public contractBalance;
   uint256 public pricePerSlot;
   uint256[] public rewardsPerRank;
+  uint[] public coins = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 
   IERC20 internal wtf_;
 
@@ -138,10 +139,40 @@ contract SlotMachine {
     }
     return rewardsPerRank[0];
   }
+  
+  function randomSelect() internal view returns (uint) {
+    uint select = uint(keccak256(abi.encodePacked(block.timestamp / block.difficulty))) % 99;
+    uint random;
+    if (select % 2 == 0) {
+        random = uint(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number))) % 99;
+    }
+    else {
+        random = uint(keccak256(abi.encodePacked(block.timestamp +  block.number))) % 99;
+    }
+    return random;
+  }
 
-  function randomSlot() internal pure returns (SlotType) {
+  function randomSlot() internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    return SlotType.CAKE;
+    uint index = randomSelect();
+    uint result = coins[index];
+    
+    if(result == 1) {
+      return SlotType.BTC;
+    }
+    else if(result == 2) {
+      return SlotType.ETH;
+    }
+    else if(result == 3) {
+      return SlotType.BNB;
+    }
+    else if(result == 4) {
+      return SlotType.CAKE;
+    }
+    else {
+      return SlotType.DOGE;
+    }
+    
   }
 
   function claimRewards() public {
