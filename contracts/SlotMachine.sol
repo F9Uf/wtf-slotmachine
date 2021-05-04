@@ -154,7 +154,9 @@ contract SlotMachine {
 
   function randomSlot() internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint result = randomSelect();
+    uint index = randomSelect();
+    uint result = coins[index];
+    
     if(result == 1) {
       return SlotType.BTC;
     }
