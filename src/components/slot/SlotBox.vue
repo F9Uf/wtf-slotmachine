@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-red-600 w-36 rounded-lg h-56 relative overflow-hidden flex justify-center">
+  <div class="bg-dark w-36 rounded-lg h-56 relative overflow-hidden flex justify-center">
     <div
       class="slot-item absolute w-28 h-auto space-y-5 transition"
       :style="getTranslateY"
