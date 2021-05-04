@@ -89,7 +89,6 @@ export default new Vuex.Store({
       else commit('SETISCORRECTCHAIN', false)
     },
     async connectWallet({ dispatch }) {
-      console.log('connect wallet');
       await window.ethereum.request({ method: 'eth_requestAccounts'});
       await dispatch('injectWeb3')
       dispatch('closeModal')

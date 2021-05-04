@@ -25,7 +25,7 @@
       >
         <h1 class="text-2xl font-semibold">{{ accountDetail.address }}</h1>
       </div> 
-      <Button type="primary">Disconnect</Button>
+      <Button type="primary" @click="disconnectWallet">Disconnect</Button>
     </Modal>
     <TheHeader />
     <TheSwtichMenu :routes="routes" />
@@ -80,6 +80,8 @@ export default {
       await this.$store.dispatch('connectWallet')
     },
     async disconnectWallet() {
+      // TODO: create function to disconnect wallet
+      this.closeModal()
     },
     async addWtfTokenToMetaMask() {
       await addTokenToMetamask(getWTFAddress(), 'WTF', 'http://localhost:8080/token_wtf.png')
