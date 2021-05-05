@@ -172,7 +172,7 @@ export default new Vuex.Store({
       return tx
     },
     async slotMachineContractAllowance({ state }) {
-      const wtfContract = await wtfContract(state.web3)
+      const wtfContract = await getWTFContract(state.web3)
       const res = await wtfContract.methods.allowance(state.account, getSlotMachineAddress()).call()
       return new BigNumber(res)
     },

@@ -4,13 +4,17 @@
       <Card>
         <Title>History</Title>
         <div class="grid grid-flow-row auto-rows-max">
-          <div class="history my-4" v-for="history in histories" :key="history.n">
+          <div
+            class="history my-4"
+            v-for="history in histories"
+            :key="history.n"
+          >
             <div class="grid grid-cols-4 gap-2">
-              <div>#{{history.n}}</div>
-              <div>{{history.c1}}</div>
-              <div>{{history.c2}}</div>
-              <div>{{history.c3}}</div>
-            </div> 
+              <div>#{{ history.n }}</div>
+              <div>{{ history.c1 }}</div>
+              <div>{{ history.c2 }}</div>
+              <div>{{ history.c3 }}</div>
+            </div>
           </div>
         </div>
       </Card>
@@ -39,14 +43,21 @@
           </div>
         </div>
         <div class="bottom mt-10">
-          <div class="float-right mb-5">
-            Balance: {{computedBalance}} WTF
-          </div>
+          <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[0].type" @click="playOnce()">{{ getBtnDisplay[0].text }}</Button>
-            <Button :type="getBtnDisplay[1].type" @click="playTen()">{{ getBtnDisplay[1].text }}</Button>
+            <Button :type="getBtnDisplay[0].type" @click="playOnce()">{{
+              getBtnDisplay[0].text
+            }}</Button>
+            <Button :type="getBtnDisplay[1].type" @click="playTen()">{{
+              getBtnDisplay[1].text
+            }}</Button>
           </div>
-          <Button :type="getBtnDisplay.type" @click="approveContract()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
+          <Button
+            :type="getBtnDisplay.type"
+            @click="approveContract()"
+            v-if="!isApprove"
+            >{{ getBtnDisplay.text }}</Button
+          >
         </div>
       </Card>
     </div>
@@ -58,7 +69,12 @@
             <Title>1000000 WTF</Title>
             <Description>~500$</Description>
           </div>
-          <Button :type="getBtnDisplay.type" @click="approveContract()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
+          <Button
+            :type="getBtnDisplay.type"
+            @click="approveContract()"
+            v-if="!isApprove"
+            >{{ getBtnDisplay.text }}</Button
+          >
           <div class="button" v-if="isApprove">
             <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
           </div>
@@ -142,8 +158,7 @@ import Card from "../components/common/Card.vue";
 import Title from "../components/common/Title.vue";
 import Button from "../components/common/Button.vue";
 import Description from "../components/common/Description.vue";
-import { numberToMoney } from '../utils/moneyFormat';
-
+import { numberToMoney } from "../utils/moneyFormat";
 
 export default {
   components: { Card, Title, Button, Description },
@@ -154,79 +169,84 @@ export default {
           n: 1,
           c1: "btc",
           c2: "btc",
-          c3: "btc"
+          c3: "btc",
         },
         {
           n: 2,
           c1: "btc",
           c2: "btc",
-          c3: "btc"
-        }
+          c3: "btc",
+        },
       ],
-      slotPics : [
-        "btc_slot",
-        "btc_slot",
-        "btc_slot"
-      ],
+      slotPics: ["btc_slot", "btc_slot", "btc_slot"],
       isApprove: false,
-      wtfBalance: 0
-        
-    }
+      wtfBalance: 0,
+    };
   },
   computed: {
     web3Type() {
-      return this.$store.getters['getWeb3Type']
+      return this.$store.getters["getWeb3Type"];
     },
     getBtnDisplay() {
-      console.log(this.web3Type)
-      if (this.web3Type === 'OK'){
-        if (!this.isApprove) return { type: 'dark', text: 'Approve Contract'}
-        else return [{ type: 'secondary', text: 'Play once'}, { type: 'primary', text: 'Play 10 times'}]
+      console.log(this.web3Type);
+      if (this.web3Type === "OK") {
+        if (!this.isApprove) return { type: "dark", text: "Approve Contract" };
+        else
+          return [
+            { type: "secondary", text: "Play once" },
+            { type: "primary", text: "Play 10 times" },
+          ];
       }
-      if (this.web3Type === 'WRONG-NET') return { type: 'danger', text: 'Wrong Network' }
-      return { type: 'dark', text: 'Connect Wallet'  }
+      if (this.web3Type === "WRONG-NET")
+        return { type: "danger", text: "Wrong Network" };
+      return { type: "dark", text: "Connect Wallet" };
     },
     getSlotCoinPics(pic) {
-      return require('../assets/currency/'+ pic + '.png')
+      return require("../assets/currency/" + pic + ".png");
     },
     setLayout(index) {
-      let start = 4*index + 1;
-      start = start.toString()
-      return 'col-start-'+ start +'col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg'
+      let start = 4 * index + 1;
+      start = start.toString();
+      return (
+        "col-start-" +
+        start +
+        "col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
+      );
     },
     accountDetail() {
-      return this.$store.getters['getAccountDetail']
+      return this.$store.getters["getAccountDetail"];
     },
     computedBalance() {
-      return numberToMoney(this.wtfBalance, 2)
+      return numberToMoney(this.wtfBalance, 2);
     },
   },
   methods: {
     async approveContract() {
-      await this.$store.dispatch('approveSlotMachineContract')
+      await this.$store.dispatch("approveSlotMachineContract");
     },
     async setIsApprove() {
-      const allowance = await this.$store.dispatch('slotMachineContractAllowance')
-      this.isApprove = !!allowance.toNumber()
-
+      const allowance = await this.$store.dispatch(
+        "slotMachineContractAllowance"
+      );
+      this.isApprove = !!allowance.toNumber();
     },
     async playOnce() {
-      const res = await this.$store.dispatch('playOnce')
+      const res = await this.$store.dispatch("playOnce");
     },
     async playTen() {
-      const res = await this.$store.dispatch('playTen')
-    }
+      const res = await this.$store.dispatch("playTen");
+    },
   },
   watch: {
     accountDetail(newV) {
-      this.wtfBalance = newV.wtfBalance
-      this.setIsApprove()
+      this.wtfBalance = newV.wtfBalance;
+      this.setIsApprove();
     },
   },
   created() {
-    this.wtfBalance = this.accountDetail.wtfBalance
-    this.setIsApprove()
-  }
+    this.wtfBalance = this.accountDetail.wtfBalance;
+    this.setIsApprove();
+  },
 };
 </script>
 
