@@ -19,10 +19,10 @@
       <Card class="grid grid-rows-3 grid-flow-col">
         <Title>Slot Machine</Title>
         <div class="slot grid grid-cols-11">
-          <div :class="setLayout(index)" v-for="(slotPic, index) in slotPics" :key="index">
+          <!-- <div :class="setLayout(index)" v-for="(slotPic, index) in slotPics" :key="index">
             <img :src="getSlotCoinPics(slotPic)" alt="" />
-          </div>
-          <!-- <div
+          </div> -->
+          <div
             class="col-start-1 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
           >
             <img src="../assets/currency/btc_slot.png" alt="" />
@@ -36,15 +36,17 @@
             class="col-start-9 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
           >
             <img src="../assets/currency/btc_slot.png" alt="" />
-          </div> -->
+          </div>
         </div>
         <div class="bottom mt-10">
           <div class="float-right mb-5">
-            Balance: 10 WTF (~10,000$)
+            Balance: {{computedBalance}} WTF
           </div>
-          <Button :type="getBtnDisplay.type">{{
-            getBtnDisplay.text
-          }}</Button>
+          <div class="button" v-if="isApprove">
+            <Button :type="getBtnDisplay[0].type">{{ getBtnDisplay[0].text }}</Button>
+            <Button :type="getBtnDisplay[1].type">{{ getBtnDisplay[1].text }}</Button>
+          </div>
+          <Button :type="getBtnDisplay.type" @click="approveContract()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
         </div>
       </Card>
     </div>
@@ -56,11 +58,14 @@
             <Title>1000000 WTF</Title>
             <Description>~500$</Description>
           </div>
-          <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
+          <Button :type="getBtnDisplay.type" @click="approveContract()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
+          <div class="button" v-if="isApprove">
+            <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
+          </div>
         </Card>
       </div>
       <div class="rules my-5">
-        <h1>Rules & rewardss</h1>
+        <h1>Rules & rewards</h1>
         <p>
           You will get a award only if your all slots are not different, but the
           rewards are not equal in each picture. So the rewards are shown below:
@@ -137,6 +142,8 @@ import Card from "../components/common/Card.vue";
 import Title from "../components/common/Title.vue";
 import Button from "../components/common/Button.vue";
 import Description from "../components/common/Description.vue";
+import { numberToMoney } from '../utils/moneyFormat';
+
 
 export default {
   components: { Card, Title, Button, Description },
@@ -160,16 +167,24 @@ export default {
         "btc_slot",
         "btc_slot",
         "btc_slot"
-      ]
+      ],
+      isApprove: true,
+      wtfBalance: 0
         
     }
   },
   computed: {
+    web3Type() {
+      return this.$store.getters['getWeb3Type']
+    },
     getBtnDisplay() {
-      if (this.web3Type === "OK") return { type: "primary", text: "Swap" };
-      if (this.web3Type === "WRONG-NET")
-        return { type: "danger", text: "Wrong Network" };
-      return { type: "dark", text: "Connect Wallet" };
+      console.log(this.web3Type)
+      if (this.web3Type === 'OK'){
+        if (!this.isApprove) return { type: 'dark', text: 'Approve Contract'}
+        else return [{ type: 'secondary', text: 'Play once'}, { type: 'primary', text: 'Play 10 times'}]
+      }
+      if (this.web3Type === 'WRONG-NET') return { type: 'danger', text: 'Wrong Network' }
+      return { type: 'dark', text: 'Connect Wallet'  }
     },
     getSlotCoinPics(pic) {
       return require('../assets/currency/'+ pic + '.png')
@@ -178,8 +193,34 @@ export default {
       let start = 4*index + 1;
       start = start.toString()
       return 'col-start-'+ start +'col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg'
-    }
+    },
+    accountDetail() {
+      return this.$store.getters['getAccountDetail']
+    },
+    computedBalance() {
+      return numberToMoney(this.wtfBalance, 2)
+    },
   },
+  methods: {
+    async approveContract() {
+      await this.$store.dispatch('approveSlotMachineContract')
+    },
+    async setIsApprove() {
+      const allowance = await this.$store.dispatch('slotMachineContractAllowance')
+      this.isApprove = !!allowance.toNumber()
+
+    },
+  },
+  watch: {
+    accountDetail(newV) {
+      this.wtfBalance = newV.wtfBalance
+      this.setIsApprove()
+    },
+  },
+  created() {
+    this.wtfBalance = this.accountDetail.wtfBalance
+    this.setIsApprove()
+  }
 };
 </script>
 

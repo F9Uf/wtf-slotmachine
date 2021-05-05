@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import BigNumber from 'bignumber.js'
-import { getDEXAddress, getDEXContract, getWeb3, getWTFContract } from './utils/web3'
+import { getDEXAddress, getDEXContract, getWeb3, getWTFContract, getSlotMachineAddress, getSlotMachineContract } from './utils/web3'
 import { getBalanceAmount, getDecimalAmount } from './utils/moneyFormat'
 import { ethers } from 'ethers'
 
@@ -162,7 +162,20 @@ export default new Vuex.Store({
         .approve(getDEXAddress(), ethers.constants.MaxUint256)
         .send({ from: state.account })
       return tx
-    }
+    },
+    async approveSlotMachineContract({ state }) {
+      const SlotMachineContract = await getSlotMachineContract(state.web3)
+      const tx = await SlotMachineContract
+        .methods
+        .approve(getSlotMachineAddress(), ethers.constants.MaxUint256)
+        .send({ from: state.account })
+      return tx
+    },
+    async slotMachineContractAllowance({ state }) {
+      const SlotMachineContract = await getSlotMachineContract(state.web3)
+      const res = await SlotMachineContract.methods.allowance(state.account, getSlotMachineAddress()).call()
+      return new BigNumber(res)
+    },
   },
   getters: {
     getModalShow(state) {
