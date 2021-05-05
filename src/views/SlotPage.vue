@@ -43,8 +43,8 @@
             Balance: {{computedBalance}} WTF
           </div>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[0].type">{{ getBtnDisplay[0].text }}</Button>
-            <Button :type="getBtnDisplay[1].type">{{ getBtnDisplay[1].text }}</Button>
+            <Button :type="getBtnDisplay[0].type" @click="playOnce()">{{ getBtnDisplay[0].text }}</Button>
+            <Button :type="getBtnDisplay[1].type" @click="playTen()">{{ getBtnDisplay[1].text }}</Button>
           </div>
           <Button :type="getBtnDisplay.type" @click="approveContract()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
         </div>
@@ -168,7 +168,7 @@ export default {
         "btc_slot",
         "btc_slot"
       ],
-      isApprove: true,
+      isApprove: false,
       wtfBalance: 0
         
     }
@@ -210,6 +210,12 @@ export default {
       this.isApprove = !!allowance.toNumber()
 
     },
+    async playOnce() {
+      const res = await this.$store.dispatch('playOnce')
+    },
+    async playTen() {
+      const res = await this.$store.dispatch('playTen')
+    }
   },
   watch: {
     accountDetail(newV) {

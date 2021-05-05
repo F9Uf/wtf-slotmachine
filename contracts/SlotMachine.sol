@@ -8,7 +8,7 @@ contract SlotMachine {
 
   uint256 public contractBalance;
   uint256 public pricePerSlot;
-  uint256[] public rewardsPerRank = [0, 45455, 456, 83, 46, 28];
+  uint256[] public rewardsPerRank;
   uint[] public coins = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 
   IERC20 internal wtf_;

@@ -8,7 +8,7 @@ module.exports = async function (deployer, network, accounts) {
   const wtfToken = await WTFERC20.deployed();
 
   // deploy SlotMachine contract with pricePerSlot(1wtf), probability of slot, token address
-  await deployer.deploy(SlotMachine, '1000000000000000000', [0,1,2,3,4,5,], wtfToken.address);
+  await deployer.deploy(SlotMachine, '1000000000000000000', [0, 45455, 456, 83, 46, 28], wtfToken.address);
   const sm = await SlotMachine.deployed();
 
   // deploy DEX contract with token address

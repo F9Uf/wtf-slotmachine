@@ -164,18 +164,34 @@ export default new Vuex.Store({
       return tx
     },
     async approveSlotMachineContract({ state }) {
-      const SlotMachineContract = await getSlotMachineContract(state.web3)
-      const tx = await SlotMachineContract
+      const wtfContract = await getWTFContract(state.web3)
+      const tx = await wtfContract
         .methods
         .approve(getSlotMachineAddress(), ethers.constants.MaxUint256)
         .send({ from: state.account })
       return tx
     },
     async slotMachineContractAllowance({ state }) {
-      const SlotMachineContract = await getSlotMachineContract(state.web3)
-      const res = await SlotMachineContract.methods.allowance(state.account, getSlotMachineAddress()).call()
+      const wtfContract = await wtfContract(state.web3)
+      const res = await wtfContract.methods.allowance(state.account, getSlotMachineAddress()).call()
       return new BigNumber(res)
     },
+    async playOnce({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const res = await slotMachineContract
+        .methods
+        .slotOne()
+        .send({ from: state.account })
+      return res
+    },
+    async playTen({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const res = await slotMachineContract
+        .methods
+        .slotTen()
+        .send({ from: state.account })
+      return res
+    }
   },
   getters: {
     getModalShow(state) {
