@@ -98,7 +98,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/btc.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">1,000,000 WTF</div>
+          <div class="col-start-4 col-span-3">45,455 WTF</div>
         </div>
         <div class="grid grid-cols-6 gap-2">
           <div class="col-start-1 col-span-1">
@@ -146,7 +146,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/doge.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">24 WTF</div>
+          <div class="col-start-4 col-span-3">28 WTF</div>
         </div>
       </div>
     </div>
@@ -232,6 +232,7 @@ export default {
     },
     async playOnce() {
       const res = await this.$store.dispatch("playOnce");
+      console.log(res)
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
