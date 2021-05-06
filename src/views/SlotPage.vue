@@ -75,7 +75,7 @@
             >{{ getBtnDisplay.text }}</Button
           >
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[2].type">{{
+            <Button :type="getBtnDisplay[2].type" @click="claimRewards()">{{
               getBtnDisplay[2].text
             }}</Button>
           </div>
@@ -253,16 +253,28 @@ export default {
       const res = await this.$store.dispatch("playTen");
       console.log(res);
     },
+    async rewardsOf() {
+      this.rewards = await this.$store.dispatch("rewardsOf");
+      console.log(this.rewards)
+    },
+    async claimRewards() {
+      await this.$store.dispatch("claimRewards");
+    }
   },
   watch: {
     accountDetail(newV) {
       this.wtfBalance = newV.wtfBalance;
       this.setIsApprove();
     },
+    rewardsAmount() {
+      this.rewardsOf()
+    }
+
   },
   created() {
     this.wtfBalance = this.accountDetail.wtfBalance;
     this.setIsApprove();
+    this.rewardsAmount()
   },
 };
 </script>
