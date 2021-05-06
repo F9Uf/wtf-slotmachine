@@ -154,13 +154,13 @@ contract SlotMachine {
 
   function randomSlot() internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint select = uint(keccak256(abi.encodePacked(block.timestamp / block.difficulty))) % 99;
+    uint select = uint(keccak256(abi.encodePacked(block.timestamp))) % 99;
     uint random;
     if (select % 2 == 0) {
-        random = uint(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number))) % 99;
+        random = uint(keccak256(abi.encodePacked(block.timestamp + block.number))) % 99;
     }
     else {
-        random = uint(keccak256(abi.encodePacked(block.timestamp +  block.number))) % 99;
+        random = uint(keccak256(abi.encodePacked(block.timestamp - block.number))) % 99;
     }
     uint index = random;
     SlotType result = coins[index];
