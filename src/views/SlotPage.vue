@@ -66,8 +66,7 @@
         <Card>
           <div class="mb-10">
             <Description>Your rewards:</Description>
-            <Title>1000000 WTF</Title>
-            <Description>~500$</Description>
+            <Title>{{ computedRewards }} WTF</Title>
           </div>
           <Button
             :type="getBtnDisplay.type"
@@ -76,7 +75,9 @@
             >{{ getBtnDisplay.text }}</Button
           >
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay.type">{{ getBtnDisplay.text }}</Button>
+            <Button :type="getBtnDisplay[2].type">{{
+              getBtnDisplay[2].text
+            }}</Button>
           </div>
         </Card>
       </div>
@@ -181,6 +182,7 @@ export default {
       slotPics: ["btc_slot", "btc_slot", "btc_slot"],
       isApprove: false,
       wtfBalance: 0,
+      rewards: 0,
     };
   },
   computed: {
@@ -191,11 +193,21 @@ export default {
       console.log(this.web3Type);
       if (this.web3Type === "OK") {
         if (!this.isApprove) return { type: "dark", text: "Approve Contract" };
-        else
-          return [
-            { type: "secondary", text: "Play once" },
-            { type: "primary", text: "Play 10 times" },
-          ];
+        else {
+          if (this.rewards > 0) {
+            return [
+              { type: "secondary", text: "Play once" },
+              { type: "primary", text: "Play 10 times" },
+              { type: "primary", text: "Claim" },
+            ];
+          } else {
+            return [
+              { type: "secondary", text: "Play once" },
+              { type: "primary", text: "Play 10 times" },
+              { type: "disabled", text: "Claim" },
+            ];
+          }
+        }
       }
       if (this.web3Type === "WRONG-NET")
         return { type: "danger", text: "Wrong Network" };
@@ -219,6 +231,9 @@ export default {
     computedBalance() {
       return numberToMoney(this.wtfBalance, 2);
     },
+    computedRewards() {
+      return numberToMoney(this.rewards, 2);
+    },
   },
   methods: {
     async approveContract() {
@@ -232,10 +247,11 @@ export default {
     },
     async playOnce() {
       const res = await this.$store.dispatch("playOnce");
-      console.log(res)
+      console.log(res);
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
+      console.log(res);
     },
   },
   watch: {

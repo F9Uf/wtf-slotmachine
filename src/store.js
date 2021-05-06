@@ -191,6 +191,14 @@ export default new Vuex.Store({
         .slotTen()
         .send({ from: state.account })
       return res
+    },
+    async claimRewards({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const rewards = await slotMachineContract
+        .methods
+        .claimRewards()
+        .send({ from: state.account })
+      return rewards
     }
   },
   getters: {
