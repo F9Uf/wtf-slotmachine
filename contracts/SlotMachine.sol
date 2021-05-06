@@ -46,9 +46,9 @@ contract SlotMachine {
   enum SlotType {
     BTC,
     ETH,
-    DOGE,
     BNB,
-    CAKE
+    CAKE,
+    DOGE
   }
 
   struct SlotInfo {

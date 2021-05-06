@@ -6,14 +6,20 @@
         <div class="grid grid-flow-row auto-rows-max">
           <div
             class="history my-4"
-            v-for="history in histories"
-            :key="history.n"
+            v-for="(history, index) in histories"
+            :key="index"
           >
             <div class="grid grid-cols-4 gap-2">
-              <div>#{{ history.n }}</div>
-              <div>{{ history.c1 }}</div>
-              <div>{{ history.c2 }}</div>
-              <div>{{ history.c3 }}</div>
+              <div>#{{ index + 1 }}</div>
+              <div>
+                <img :src="require('@/assets/currency/' + picPaths[history.slot1])" alt="" />
+              </div>
+              <div>
+                <img :src="require('@/assets/currency/' + picPaths[history.slot2])" alt="" />
+              </div>
+              <div>
+                <img :src="require('@/assets/currency/' + picPaths[history.slot3])" alt="" />
+              </div>
             </div>
           </div>
         </div>
@@ -165,20 +171,8 @@ export default {
   components: { Card, Title, Button, Description },
   data() {
     return {
-      histories: [
-        {
-          n: 1,
-          c1: "btc",
-          c2: "btc",
-          c3: "btc",
-        },
-        {
-          n: 2,
-          c1: "btc",
-          c2: "btc",
-          c3: "btc",
-        },
-      ],
+      histories: [],
+      picPaths: ["btc.png", "eth.png", "bnb.png", "cake.png", "doge.png"],
       slotPics: ["btc_slot", "btc_slot", "btc_slot"],
       isApprove: false,
       wtfBalance: 0,
@@ -255,26 +249,27 @@ export default {
     },
     async rewardsOf() {
       this.rewards = await this.$store.dispatch("rewardsOf");
-      console.log(this.rewards)
+      console.log(this.rewards);
     },
     async claimRewards() {
-      await this.$store.dispatch("claimRewards");
-    }
+      const claim = await this.$store.dispatch("claimRewards");
+      console.log(claim);
+    },
+    async historyOf() {
+      this.histories = await this.$store.dispatch("historyOf");
+    },
   },
   watch: {
     accountDetail(newV) {
       this.wtfBalance = newV.wtfBalance;
       this.setIsApprove();
     },
-    rewardsAmount() {
-      this.rewardsOf()
-    }
-
   },
   created() {
     this.wtfBalance = this.accountDetail.wtfBalance;
     this.setIsApprove();
-    this.rewardsAmount()
+    this.rewardsOf();
+    this.historyOf();
   },
 };
 </script>
