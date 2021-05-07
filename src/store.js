@@ -55,6 +55,20 @@ export default new Vuex.Store({
         type: 'CONNECT_WALLET'
       })
     },
+    openModalReward({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Your Rewards',
+        type: 'REWARD'
+      })
+    },
+    openModalClaim({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Claim Your Rewards',
+        type: 'CLAIM'
+      })
+    },
     async initState({ dispatch }) {
       await dispatch('getAccount')
       await dispatch('getChain')
@@ -205,7 +219,7 @@ export default new Vuex.Store({
       const rewards = await slotMachineContract
         .methods
         .claimRewards(state.account)
-        .call({ from: state.account })
+        .call()
       return rewards
     },
     async historyOf({ state }) {

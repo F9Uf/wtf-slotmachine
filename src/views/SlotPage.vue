@@ -1,7 +1,7 @@
 <template>
   <div class="slot-page grid grid-cols-12 gap-8">
     <!-- Rewards Modal -->
-    <Modal :title="titleModal.reward" v-if="showRewardModal" @close="closeModal">
+    <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'REWARD'" @close="closeModal">
       <div
         class="grid grid-cols-4 gap-2"
         v-for="(slot, index) in results.slot"
@@ -30,7 +30,7 @@
       <div>Total rewards: {{ result.totalRewards }} WTF</div>
     </Modal>
     <!-- Claim Modal -->
-    <Modal :title="titleModal.claim" v-if="showClaimModal" @close="closeModal">
+    <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'CLAIM'" @close="closeModal">
       <div>Total rewards: {{ computedRewards }} WTF</div>
     </Modal>
     <div class="history col-start-1 col-span-3">
@@ -220,12 +220,6 @@ export default {
   components: { Card, Title, Button, Description, Modal },
   data() {
     return {
-      titleModal: {
-        reward: "Your rewards",
-        claim: "Claim rewards"
-      },
-      showClaimModal: false,
-      showRewardModal: false,
       histories: [],
       historyPics: ["btc.png", "eth2.png", "bnb.png", "cake.png", "doge.png"],
       slotPics: ["btc_slot", "btc_slot", "btc_slot"],
@@ -288,11 +282,16 @@ export default {
     computedRewards() {
       return numberToMoney(this.rewards, 2);
     },
+    isShowModal() {
+      return this.$store.getters['getModalShow']
+    },
+    modalDetail() {
+      return this.$store.getters['getModalDetail']
+    }
   },
   methods: {
     closeModal() {
-      this.showClaimModal = false;
-      this.showRewardModal = false;
+      this.$store.dispatch('closeModal')
     },
     async approveContract() {
       await this.$store.dispatch("approveSlotMachineContract");
@@ -308,7 +307,6 @@ export default {
       this.results.slot = this.results.slot.push(res.returnValues.slot);
       this.results.rewards = this.results.rewards.push(res.returnValues.reward);
       this.results.totalRewards = res.returnValues.reward;
-      this.showRewardModal = true;
       console.log(res);
 
     },
@@ -317,7 +315,6 @@ export default {
       this.results.slot = res.returnValues.slot;
       this.results.rewards = res.returnValues.reward;
       this.results.totalRewards = res.returnValues.totalReward;
-      this.showRewardModal = true;
       console.log(res);
     },
     async rewardsOf() {
@@ -327,7 +324,7 @@ export default {
     async claimRewards() {
       const value = await this.$store.dispatch("claimRewards");
       const claim = value.returnValues.rewards;
-      this.showClaimModal = true;
+      this.$store.dispatch('openModalClaim');
       console.log(claim);
       
     },
