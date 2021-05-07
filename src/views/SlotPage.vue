@@ -36,7 +36,7 @@
     <div class="history col-start-1 col-span-3">
       <Card>
         <Title>History</Title>
-        <div class="grid grid-flow-row auto-rows-max overflow-y-auto h-96">
+        <div class="grid grid-flow-row auto-rows-max overflow-y-auto history-body">
           <div
             class="history my-4"
             v-for="(history, index) in histories"
@@ -98,7 +98,7 @@
         </div>
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
-          <div class="button" v-if="isApprove">
+          <div class="button space-y-6" v-if="isApprove">
             <Button :type="getBtnDisplay[0].type" @click="playOnce();">
               {{ getBtnDisplay[0].text }}
             </Button>
@@ -362,5 +362,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.history-body {
+  height: 519.13px;
+}
 </style>
