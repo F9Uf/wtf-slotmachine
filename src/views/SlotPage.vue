@@ -102,7 +102,7 @@
             <Button :type="getBtnDisplay[0].type" @click="playOnce();">
               {{ getBtnDisplay[0].text }}
             </Button>
-            <Button :type="getBtnDisplay[1].type" @click="playTen();">
+            <Button :type="getBtnDisplay[1].type" @click="playTen()">
               {{ getBtnDisplay[1].text }}
             </Button>
           </div>
