@@ -205,7 +205,7 @@ export default new Vuex.Store({
       const rewards = await slotMachineContract
         .methods
         .claimRewards(state.account)
-        .call()
+        .call({ from: state.account })
       return rewards
     },
     async historyOf({ state }) {

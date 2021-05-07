@@ -1,5 +1,38 @@
 <template>
   <div class="slot-page grid grid-cols-12 gap-8">
+    <!-- Rewards Modal -->
+    <Modal :title="titleModal.reward" v-if="showRewardModal" @close="closeModal">
+      <div
+        class="grid grid-cols-4 gap-2"
+        v-for="(slot, index) in results.slot"
+        :key="index"
+      >
+        <div>
+          <img
+            :src="require('@/assets/currency/' + historyPics[slot.slot1])"
+            alt=""
+          />
+        </div>
+        <div>
+          <img
+            :src="require('@/assets/currency/' + historyPics[slot.slot2])"
+            alt=""
+          />
+        </div>
+        <div>
+          <img
+            :src="require('@/assets/currency/' + historyPics[slot.slot3])"
+            alt=""
+          />
+        </div>
+        <div>{{ result.rewards[index] }} WTF</div>
+      </div>
+      <div>Total rewards: {{ result.totalRewards }} WTF</div>
+    </Modal>
+    <!-- Claim Modal -->
+    <Modal :title="titleModal.claim" v-if="showClaimModal" @close="closeModal">
+      <div>Total rewards: {{ computedRewards }} WTF</div>
+    </Modal>
     <div class="history col-start-1 col-span-3">
       <Card>
         <Title>History</Title>
@@ -12,13 +45,28 @@
             <div class="grid grid-cols-4 gap-2">
               <div>#{{ index + 1 }}</div>
               <div>
-                <img :src="require('@/assets/currency/' + picPaths[history.slot1])" alt="" />
+                <img
+                  :src="
+                    require('@/assets/currency/' + historyPics[history.slot1])
+                  "
+                  alt=""
+                />
               </div>
               <div>
-                <img :src="require('@/assets/currency/' + picPaths[history.slot2])" alt="" />
+                <img
+                  :src="
+                    require('@/assets/currency/' + historyPics[history.slot2])
+                  "
+                  alt=""
+                />
               </div>
               <div>
-                <img :src="require('@/assets/currency/' + picPaths[history.slot3])" alt="" />
+                <img
+                  :src="
+                    require('@/assets/currency/' + historyPics[history.slot3])
+                  "
+                  alt=""
+                />
               </div>
             </div>
           </div>
@@ -165,18 +213,30 @@ import Card from "../components/common/Card.vue";
 import Title from "../components/common/Title.vue";
 import Button from "../components/common/Button.vue";
 import Description from "../components/common/Description.vue";
+import Modal from "../components/common/Modal.vue";
 import { numberToMoney } from "../utils/moneyFormat";
 
 export default {
-  components: { Card, Title, Button, Description },
+  components: { Card, Title, Button, Description, Modal },
   data() {
     return {
+      titleModal: {
+        reward: "Your rewards",
+        claim: "Claim rewards"
+      },
+      showClaimModal: false,
+      showRewardModal: false,
       histories: [],
-      picPaths: ["btc.png", "eth.png", "bnb.png", "cake.png", "doge.png"],
+      historyPics: ["btc.png", "eth2.png", "bnb.png", "cake.png", "doge.png"],
       slotPics: ["btc_slot", "btc_slot", "btc_slot"],
       isApprove: false,
       wtfBalance: 0,
       rewards: 0,
+      results: {
+        slot: [],
+        rewards: [],
+        totalRewards: 0,
+      },
     };
   },
   computed: {
@@ -230,6 +290,10 @@ export default {
     },
   },
   methods: {
+    closeModal() {
+      this.showClaimModal = false;
+      this.showRewardModal = false;
+    },
     async approveContract() {
       await this.$store.dispatch("approveSlotMachineContract");
     },
@@ -241,10 +305,19 @@ export default {
     },
     async playOnce() {
       const res = await this.$store.dispatch("playOnce");
+      this.results.slot = this.results.slot.push(res.returnValues.slot);
+      this.results.rewards = this.results.rewards.push(res.returnValues.reward);
+      this.results.totalRewards = res.returnValues.reward;
+      this.showRewardModal = true;
       console.log(res);
+
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
+      this.results.slot = res.returnValues.slot;
+      this.results.rewards = res.returnValues.reward;
+      this.results.totalRewards = res.returnValues.totalReward;
+      this.showRewardModal = true;
       console.log(res);
     },
     async rewardsOf() {
@@ -252,8 +325,11 @@ export default {
       console.log(this.rewards);
     },
     async claimRewards() {
-      const claim = await this.$store.dispatch("claimRewards");
+      const value = await this.$store.dispatch("claimRewards");
+      const claim = value.returnValues.rewards;
+      this.showClaimModal = true;
       console.log(claim);
+      
     },
     async historyOf() {
       this.histories = await this.$store.dispatch("historyOf");
