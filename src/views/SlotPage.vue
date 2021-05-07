@@ -99,10 +99,10 @@
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[0].type" @click="playOnce();">{{
+            <Button :type="getBtnDisplay[0].type" @click="playOnce(); openRewardModal();">{{
               getBtnDisplay[0].text
             }}</Button>
-            <Button :type="getBtnDisplay[1].type" @click="playTen();">{{
+            <Button :type="getBtnDisplay[1].type" @click="playTen(); openRewardModal();">{{
               getBtnDisplay[1].text
             }}</Button>
           </div>

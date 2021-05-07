@@ -189,8 +189,6 @@ contract SlotMachine {
 
     wtf_.transfer(msg.sender, rewards*(10**18));
 
-    playerRewards[msg.sender] = 0;
-
     emit ClaimRewards(msg.sender, rewards);
   }
 }
