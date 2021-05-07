@@ -9,19 +9,19 @@
       >
         <div>
           <img
-            :src="require('@/assets/currency/' + historyPics[slot.slot1])"
+            :src="require('@/assets/currency/' + pics[slot.slot1])"
             alt=""
           />
         </div>
         <div>
           <img
-            :src="require('@/assets/currency/' + historyPics[slot.slot2])"
+            :src="require('@/assets/currency/' + pics[slot.slot2])"
             alt=""
           />
         </div>
         <div>
           <img
-            :src="require('@/assets/currency/' + historyPics[slot.slot3])"
+            :src="require('@/assets/currency/' + pics[slot.slot3])"
             alt=""
           />
         </div>
@@ -47,7 +47,7 @@
               <div>
                 <img
                   :src="
-                    require('@/assets/currency/' + historyPics[history.slot1])
+                    require('@/assets/currency/' + pics[history.slot1])
                   "
                   alt=""
                 />
@@ -55,7 +55,7 @@
               <div>
                 <img
                   :src="
-                    require('@/assets/currency/' + historyPics[history.slot2])
+                    require('@/assets/currency/' + pics[history.slot2])
                   "
                   alt=""
                 />
@@ -63,7 +63,7 @@
               <div>
                 <img
                   :src="
-                    require('@/assets/currency/' + historyPics[history.slot3])
+                    require('@/assets/currency/' + pics[history.slot3])
                   "
                   alt=""
                 />
@@ -99,10 +99,10 @@
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[0].type" @click="playOnce()">{{
+            <Button :type="getBtnDisplay[0].type" @click="playOnce(); openRewardModal();">{{
               getBtnDisplay[0].text
             }}</Button>
-            <Button :type="getBtnDisplay[1].type" @click="playTen()">{{
+            <Button :type="getBtnDisplay[1].type" @click="playTen(); openRewardModal();">{{
               getBtnDisplay[1].text
             }}</Button>
           </div>
@@ -129,7 +129,7 @@
             >{{ getBtnDisplay.text }}</Button
           >
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[2].type" @click="claimRewards()">{{
+            <Button :type="getBtnDisplay[2].type" @click="claimRewards(); openClaimModal();">{{
               getBtnDisplay[2].text
             }}</Button>
           </div>
@@ -221,7 +221,7 @@ export default {
   data() {
     return {
       histories: [],
-      historyPics: ["btc.png", "eth2.png", "bnb.png", "cake.png", "doge.png"],
+      pics: ["btc.png", "eth2.png", "bnb.png", "cake.png", "doge.png"],
       slotPics: ["btc_slot", "btc_slot", "btc_slot"],
       isApprove: false,
       wtfBalance: 0,
@@ -293,6 +293,13 @@ export default {
     closeModal() {
       this.$store.dispatch('closeModal')
     },
+    openClaimModal() {
+      this.$store.dispatch('openModalClaim');
+    },
+    openRewardModal() {
+      console.log("open_rewards")
+      this.$store.dispatch('openModalReward');
+    },
     async approveContract() {
       await this.$store.dispatch("approveSlotMachineContract");
     },
@@ -324,7 +331,6 @@ export default {
     async claimRewards() {
       const value = await this.$store.dispatch("claimRewards");
       const claim = value.returnValues.rewards;
-      this.$store.dispatch('openModalClaim');
       console.log(claim);
       
     },
