@@ -36,14 +36,14 @@
     <div class="history col-start-1 col-span-3">
       <Card>
         <Title>History</Title>
-        <div class="grid grid-flow-row auto-rows-max">
+        <div class="grid grid-flow-row auto-rows-max overflow-y-auto h-96">
           <div
             class="history my-4"
             v-for="(history, index) in histories"
             :key="index"
           >
             <div class="grid grid-cols-4 gap-2">
-              <div>#{{ index + 1 }}</div>
+              <div>#{{ histories.length - index }}</div>
               <div>
                 <img
                   :src="
@@ -337,7 +337,9 @@ export default {
       
     },
     async historyOf() {
-      this.histories = await this.$store.dispatch("historyOf");
+      let tempHist = await this.$store.dispatch("historyOf");
+      tempHist = tempHist.map(e => ({ slot1: e.slot1, slot2: e.slot2, slot3: e.slot3 }))
+      this.histories = tempHist.reverse()
     },
     async initial() {
       await this.setIsApprove();
