@@ -42,7 +42,7 @@ export default {
     return {
       routes: [
         { to: '/swap', name: 'SwapPage', text: 'Swap' },
-        { to: '/', name: 'Home', text: 'Slot Machine' }
+        { to: '/slot', name: 'SlotPage', text: 'Slot Machine' }
       ]
     }
   },
