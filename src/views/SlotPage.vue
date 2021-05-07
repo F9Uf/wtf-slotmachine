@@ -339,18 +339,23 @@ export default {
     async historyOf() {
       this.histories = await this.$store.dispatch("historyOf");
     },
+    async initial() {
+      await this.setIsApprove();
+      await this.rewardsOf();
+      await this.historyOf();
+    }
   },
   watch: {
     accountDetail(newV) {
       this.wtfBalance = newV.wtfBalance;
-      this.setIsApprove();
+      this.initial()
     },
   },
-  created() {
+  mounted() {
     this.wtfBalance = this.accountDetail.wtfBalance;
-    this.setIsApprove();
-    this.rewardsOf();
-    this.historyOf();
+    if (this.accountDetail.address !== null) {
+      this.initial()
+    }
   },
 };
 </script>
