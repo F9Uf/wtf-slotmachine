@@ -65,9 +65,9 @@ contract SlotMachine {
 
     wtf_.transferFrom(msg.sender, address(this), pricePerSlot);
 
-    SlotType slot1 = randomSlot1();
-    SlotType slot2 = randomSlot2();
-    SlotType slot3 = randomSlot3();
+    SlotType slot1 = randomSlot1(5);
+    SlotType slot2 = randomSlot2(1);
+    SlotType slot3 = randomSlot3(65);
 
     SlotInfo memory newOneSlot = SlotInfo(
       slot1,
@@ -83,8 +83,7 @@ contract SlotMachine {
     emit ResultOne(newOneSlot, reward);
   }
 
-  function slotTen() public payable {
-    uint256 time = block.timestamp;
+function slotTen() public payable {
     uint256 totalPaid = 10 * pricePerSlot;
     uint256 balnace = wtf_.balanceOf(msg.sender);
     require(balnace >= totalPaid, "Amount too low");
@@ -96,19 +95,17 @@ contract SlotMachine {
     uint256[] memory rewards = new uint256[](10);
     uint256 rewardBatch = 0;
 
-    uint256 i = 0;
-    while (i<10) {
-      uint256 Now = block.timestamp;
-      if (Now > time) {
-        SlotType slot1 = randomSlot1();
-        SlotType slot2 = randomSlot2();
-        SlotType slot3 = randomSlot3();
-      
+    for (uint256 i = 0; i < 10; i++) {
+      SlotType slot1 = randomSlot1(i);
+      SlotType slot2 = randomSlot2(i);
+      SlotType slot3 = randomSlot3(i);
+
       SlotInfo memory newOneSlot = SlotInfo(
         slot1,
         slot2,
         slot3
       );
+
       uint256 reward = calculateReward(newOneSlot);
 
       slotBatch[i] = newOneSlot;
@@ -116,9 +113,8 @@ contract SlotMachine {
       rewardBatch += reward;
 
       playerHistory[msg.sender].push(newOneSlot);
-      i += 1;
-      }
     }
+
     playerRewards[msg.sender] += rewardBatch;
 
     emit ResultBatch(slotBatch, rewards, rewardBatch);
@@ -156,27 +152,27 @@ contract SlotMachine {
   //   return random;
   // }
 
-  function randomSlot1() internal view returns (SlotType) {
+  function randomSlot1(uint256 seed) internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, seed))) % 99;
     SlotType result = coins[index];
     
     return result;
     
   }
 
-  function randomSlot2() internal view returns (SlotType) {
+  function randomSlot2(uint256 seed) internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.gaslimit, msg.sender))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.gaslimit, msg.sender, seed))) % 99;
     SlotType result = coins[index];
     
     return result;
     
   }
 
-  function randomSlot3() internal view returns (SlotType) {
+  function randomSlot3(uint256 seed) internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.number, msg.sender))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.number, msg.sender, seed))) % 99;
     SlotType result = coins[index];
     
     return result;
@@ -188,6 +184,8 @@ contract SlotMachine {
     require(rewards > 0, "no reward");
 
     wtf_.transfer(msg.sender, rewards*(10**18));
+
+    playerRewards[msg.sender] = 0;
 
     emit ClaimRewards(msg.sender, rewards);
   }

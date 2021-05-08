@@ -16,7 +16,7 @@
     </Modal>
     <TheHeader />
     <TheSwtichMenu :routes="routes" />
-    <div class="content py-10 px-10 w-full">
+    <div class="content pb-10 px-10 w-full">
       <router-view></router-view>
     </div>
     <button class="my-5 mx-10" @click="addWtfTokenToMetaMask">Click to add WTF token to Metamask</button>
@@ -42,7 +42,7 @@ export default {
     return {
       routes: [
         { to: '/swap', name: 'SwapPage', text: 'Swap' },
-        { to: '/', name: 'Home', text: 'Slot Machine' }
+        { to: '/slot', name: 'SlotPage', text: 'Slot Machine' }
       ]
     }
   },

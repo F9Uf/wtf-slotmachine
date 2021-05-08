@@ -36,14 +36,14 @@
     <div class="history col-start-1 col-span-3">
       <Card>
         <Title>History</Title>
-        <div class="grid grid-flow-row auto-rows-max">
+        <div class="grid grid-flow-row auto-rows-max overflow-y-auto history-body">
           <div
             class="history my-4"
             v-for="(history, index) in histories"
             :key="index"
           >
             <div class="grid grid-cols-4 gap-2">
-              <div>#{{ index + 1 }}</div>
+              <div>#{{ histories.length - index }}</div>
               <div>
                 <img
                   :src="
@@ -98,20 +98,21 @@
         </div>
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
-          <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[0].type" @click="playOnce(); openRewardModal();">{{
-              getBtnDisplay[0].text
-            }}</Button>
-            <Button :type="getBtnDisplay[1].type" @click="playTen(); openRewardModal();">{{
-              getBtnDisplay[1].text
-            }}</Button>
+          <div class="button space-y-6" v-if="isApprove">
+            <Button :type="getBtnDisplay[0].type" @click="playOnce()">
+              {{ getBtnDisplay[0].text }}
+            </Button>
+            <Button :type="getBtnDisplay[1].type" @click="playTen()">
+              {{ getBtnDisplay[1].text }}
+            </Button>
           </div>
           <Button
             :type="getBtnDisplay.type"
             @click="approveContract()"
             v-if="!isApprove"
-            >{{ getBtnDisplay.text }}</Button
           >
+            {{ getBtnDisplay.text }}
+          </Button>
         </div>
       </Card>
     </div>
@@ -126,12 +127,13 @@
             :type="getBtnDisplay.type"
             @click="approveContract()"
             v-if="!isApprove"
-            >{{ getBtnDisplay.text }}</Button
           >
+            {{ getBtnDisplay.text }}
+          </Button>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[2].type" @click="claimRewards(); openClaimModal();">{{
-              getBtnDisplay[2].text
-            }}</Button>
+            <Button :type="getBtnDisplay[2].type" @click="claimRewards(); openClaimModal();">
+              {{ getBtnDisplay[2].text }}
+            </Button>
           </div>
         </Card>
       </div>
@@ -335,23 +337,33 @@ export default {
       
     },
     async historyOf() {
-      this.histories = await this.$store.dispatch("historyOf");
+      let tempHist = await this.$store.dispatch("historyOf");
+      tempHist = tempHist.map(e => ({ slot1: e.slot1, slot2: e.slot2, slot3: e.slot3 }))
+      this.histories = tempHist.reverse()
     },
+    async initial() {
+      await this.setIsApprove();
+      await this.rewardsOf();
+      await this.historyOf();
+    }
   },
   watch: {
     accountDetail(newV) {
       this.wtfBalance = newV.wtfBalance;
-      this.setIsApprove();
+      this.initial()
     },
   },
-  created() {
+  mounted() {
     this.wtfBalance = this.accountDetail.wtfBalance;
-    this.setIsApprove();
-    this.rewardsOf();
-    this.historyOf();
+    if (this.accountDetail.address !== null) {
+      this.initial()
+    }
   },
 };
 </script>
 
-<style>
+<style scoped>
+.history-body {
+  height: 519.13px;
+}
 </style>
