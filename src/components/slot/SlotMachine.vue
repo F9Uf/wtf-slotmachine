@@ -2,7 +2,7 @@
   <div class="slot-machine inline-flex space-x-20 mx-auto">
     <SlotBox :isSpin="spin1" @stop="stopSpin1" :target="slots.slot1" :duration="durations1" />
     <SlotBox :isSpin="spin2" @stop="stopSpin2" :target="slots.slot2" :duration="durations2" />
-    <SlotBox :isSpin="spin3" @stop="stopSpin3" :target="slots.slot2" :duration="durations3" />
+    <SlotBox :isSpin="spin3" @stop="stopSpin3" :target="slots.slot3" :duration="durations3" />
   </div>
 </template>
 

@@ -68,7 +68,9 @@
       <Card class="flex flex-col">
         <Title class="mb-10">Slot Machine</Title>
         <SlotMachine
-          :isSpin="false"
+          :isSpin="isSpin"
+          :slots="displaySlot"
+          @stop="stopSpin"
         />
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
@@ -210,6 +212,13 @@ export default {
         totalRewards: 0,
       },
       currentAddress: null,
+      isSpin: false,
+      displaySlot: {
+        slot1: 1,
+        slot2: 2,
+        slot3: 3
+      },
+      currentSlot: null
     };
   },
   computed: {
@@ -268,6 +277,12 @@ export default {
     }
   },
   methods: {
+    async stopSpin() {
+      this.isSpin = false
+      await this.rewardsOf();
+      await this.historyOf();
+      this.openRewardModal()
+    },
     closeModal() {
       this.$store.dispatch('closeModal')
     },
@@ -289,18 +304,20 @@ export default {
     async playOnce() {
       const res = await this.$store.dispatch("playOnce");
       this.results.slot = [
-          {
-            slot1: res.returnValues.slot.slot1,
-            slot2: res.returnValues.slot.slot2,
-            slot3: res.returnValues.slot.slot3
-          }
-        ]
+        {
+          slot1: res.returnValues.slot.slot1,
+          slot2: res.returnValues.slot.slot2,
+          slot3: res.returnValues.slot.slot3
+        }
+      ]
+      this.displaySlot = {
+        slot1: Number(this.results.slot[0].slot1),
+        slot2: Number(this.results.slot[0].slot2),
+        slot3: Number(this.results.slot[0].slot3)
+      }
+      this.isSpin = true
       this.results.rewards = [res.returnValues.reward]
       this.results.totalRewards = res.returnValues.reward
-      // fetch new rewards and history
-      await this.rewardsOf();
-      await this.historyOf();
-      this.openRewardModal()
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
