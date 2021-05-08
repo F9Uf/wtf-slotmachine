@@ -29,7 +29,7 @@
         <Title>History</Title>
         <div class="grid grid-flow-row auto-rows-max overflow-y-auto history-body">
           <div
-            class="history my-4"
+            :class="`history ${history.slot1 === history.slot2 && history.slot2 === history.slot3 ? 'bg-secondary' : 'bg-transparent'} py-4 px-2 rounded-md`"
             v-for="(history, index) in histories"
             :key="index"
           >
