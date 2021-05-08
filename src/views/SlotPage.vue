@@ -330,12 +330,13 @@ export default {
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
-      this.results.slot = res.returnValues.slot;
-      this.results.rewards = res.returnValues.reward;
+      this.results.slot = res.returnValues.slots.map(e => ({ slot1: e.slot1, slot2: e.slot2, slot3: e.slot3}));
+      this.results.rewards = res.returnValues.rewards;
       this.results.totalRewards = res.returnValues.totalReward;
       // fetch new rewards and history
       await this.rewardsOf();
       await this.historyOf();
+      this.openRewardModal()
     },
     async rewardsOf() {
       this.rewards = await this.$store.dispatch("rewardsOf");
