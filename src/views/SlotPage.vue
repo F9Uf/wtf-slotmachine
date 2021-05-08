@@ -290,7 +290,6 @@ export default {
       this.$store.dispatch('openModalClaim');
     },
     openRewardModal() {
-      console.log("open_rewards")
       this.$store.dispatch('openModalReward');
     },
     async approveContract() {
@@ -313,7 +312,6 @@ export default {
         ]
       this.results.rewards = [res.returnValues.reward]
       this.results.totalRewards = res.returnValues.reward
-      console.log(this.results.slot);
       // fetch new rewards and history
       await this.rewardsOf();
       await this.historyOf();
@@ -333,10 +331,8 @@ export default {
       this.rewards = await this.$store.dispatch("rewardsOf");
     },
     async claimRewards() {
-      const value = await this.$store.dispatch("claimRewards");
-      const claim = value.returnValues.rewards;
-      console.log(claim);
-      
+      await this.$store.dispatch("claimRewards");
+      await this.rewardsOf();
     },
     async historyOf() {
       let tempHist = await this.$store.dispatch("historyOf");
