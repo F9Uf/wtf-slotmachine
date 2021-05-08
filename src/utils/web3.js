@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import WTFERC20 from '../contracts/WTFERC20.json'
 import DEX from '../contracts/DEX.json'
+import SLOTMACHINE from '../contracts/SlotMachine.json'
 
 export const getWeb3 = () => {
   var web3js = window.web3
@@ -36,4 +37,12 @@ export const getDEXAddress = () => {
 
 export const getDEXContract = (web3) => {
   return getContract(web3, DEX)
+}
+
+export const getSlotMachineAddress = () => {
+  return getAdrress(SLOTMACHINE)
+}
+
+export const getSlotMachineContract = (web3) => {
+  return getContract(web3, SLOTMACHINE)
 }

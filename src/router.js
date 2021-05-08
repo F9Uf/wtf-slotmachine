@@ -7,12 +7,17 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('./views/Home.vue')
+    redirect: '/slot'
   },
   {
     path: '/swap',
     name: 'SwapPage',
     component: () => import('./views/SwapPage.vue')
+  },
+  {
+    path: '/slot',
+    name: 'SlotPage',
+    component: () => import('./views/SlotPage.vue')
   }
 ]
 

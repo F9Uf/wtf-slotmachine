@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import BigNumber from 'bignumber.js'
-import { getDEXAddress, getDEXContract, getWeb3, getWTFContract } from './utils/web3'
+import { getDEXAddress, getDEXContract, getWeb3, getWTFContract, getSlotMachineAddress, getSlotMachineContract } from './utils/web3'
 import { getBalanceAmount, getDecimalAmount } from './utils/moneyFormat'
 import { ethers } from 'ethers'
 
@@ -60,6 +60,20 @@ export default new Vuex.Store({
         isShow: true,
         title: 'Your Wallet',
         type: 'ACCOUNT_WALLET'
+      })
+    },
+    openModalReward({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Your Rewards',
+        type: 'REWARD'
+      })
+    },
+    openModalClaim({ commit }) {
+      commit('SETMODAL', {
+        isShow: true,
+        title: 'Claim Your Rewards',
+        type: 'CLAIM'
       })
     },
     async initState({ dispatch }) {
@@ -168,6 +182,59 @@ export default new Vuex.Store({
         .approve(getDEXAddress(), ethers.constants.MaxUint256)
         .send({ from: state.account })
       return tx
+    },
+    async approveSlotMachineContract({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const tx = await wtfContract
+        .methods
+        .approve(getSlotMachineAddress(), ethers.constants.MaxUint256)
+        .send({ from: state.account })
+      return tx
+    },
+    async slotMachineContractAllowance({ state }) {
+      const wtfContract = await getWTFContract(state.web3)
+      const res = await wtfContract.methods.allowance(state.account, getSlotMachineAddress()).call()
+      return new BigNumber(res)
+    },
+    async playOnce({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const res = await slotMachineContract
+        .methods
+        .slotOne()
+        .send({ from: state.account })
+      return res.events.ResultOne
+    },
+    async playTen({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const res = await slotMachineContract
+        .methods
+        .slotTen()
+        .send({ from: state.account })
+      return res.events.ResultBatch
+    },
+    async rewardsOf({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const rewardOf = await slotMachineContract
+        .methods
+        .rewardOf(state.account)
+        .call()
+      return rewardOf
+    },
+    async claimRewards({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const res = await slotMachineContract
+        .methods
+        .claimRewards()
+        .send({from: state.account})
+      return res.events.ClaimRewards
+    },
+    async historyOf({ state }) {
+      const slotMachineContract = await getSlotMachineContract(state.web3);
+      const history = await slotMachineContract
+        .methods
+        .historyOf(state.account)
+        .call()
+      return history
     }
   },
   getters: {

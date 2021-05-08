@@ -8,8 +8,8 @@ contract SlotMachine {
 
   uint256 public contractBalance;
   uint256 public pricePerSlot;
-  uint256[] public rewardsPerRank = [0, 45455, 456, 83, 46, 38];
-  uint[] public coins = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+  uint256[] public rewardsPerRank;
+  SlotType[] public coins = [SlotType.BTC, SlotType.BTC, SlotType.BTC, SlotType.BTC, SlotType.BTC, SlotType.BTC, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.ETH, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.BNB, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.CAKE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE, SlotType.DOGE];
 
   IERC20 internal wtf_;
 
@@ -46,9 +46,9 @@ contract SlotMachine {
   enum SlotType {
     BTC,
     ETH,
-    DOGE,
     BNB,
-    CAKE
+    CAKE,
+    DOGE
   }
 
   struct SlotInfo {
@@ -65,9 +65,9 @@ contract SlotMachine {
 
     wtf_.transferFrom(msg.sender, address(this), pricePerSlot);
 
-    SlotType slot1 = randomSlot();
-    SlotType slot2 = randomSlot();
-    SlotType slot3 = randomSlot();
+    SlotType slot1 = randomSlot1(5);
+    SlotType slot2 = randomSlot2(1);
+    SlotType slot3 = randomSlot3(65);
 
     SlotInfo memory newOneSlot = SlotInfo(
       slot1,
@@ -83,7 +83,7 @@ contract SlotMachine {
     emit ResultOne(newOneSlot, reward);
   }
 
-  function slotTen() public payable {
+function slotTen() public payable {
     uint256 totalPaid = 10 * pricePerSlot;
     uint256 balnace = wtf_.balanceOf(msg.sender);
     require(balnace >= totalPaid, "Amount too low");
@@ -96,9 +96,9 @@ contract SlotMachine {
     uint256 rewardBatch = 0;
 
     for (uint256 i = 0; i < 10; i++) {
-      SlotType slot1 = randomSlot();
-      SlotType slot2 = randomSlot();
-      SlotType slot3 = randomSlot();
+      SlotType slot1 = randomSlot1(i);
+      SlotType slot2 = randomSlot2(i);
+      SlotType slot3 = randomSlot3(i);
 
       SlotInfo memory newOneSlot = SlotInfo(
         slot1,
@@ -140,38 +140,42 @@ contract SlotMachine {
     return rewardsPerRank[0];
   }
   
-  function randomSelect() internal view returns (uint) {
-    uint select = uint(keccak256(abi.encodePacked(block.timestamp / block.difficulty))) % 99;
-    uint random;
-    if (select % 2 == 0) {
-        random = uint(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number))) % 99;
-    }
-    else {
-        random = uint(keccak256(abi.encodePacked(block.timestamp +  block.number))) % 99;
-    }
-    return random;
+  // function randomSelect() internal view returns (uint) {
+  //   uint select = uint(keccak256(abi.encodePacked(block.timestamp / block.difficulty))) % 99;
+  //   uint random;
+  //   if (select % 2 == 0) {
+  //       random = uint(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number))) % 99;
+  //   }
+  //   else {
+  //       random = uint(keccak256(abi.encodePacked(block.timestamp +  block.number))) % 99;
+  //   }
+  //   return random;
+  // }
+
+  function randomSlot1(uint256 seed) internal view returns (SlotType) {
+    // TODO: logic to random slot with probability
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, seed))) % 99;
+    SlotType result = coins[index];
+    
+    return result;
+    
   }
 
-  function randomSlot() internal view returns (SlotType) {
+  function randomSlot2(uint256 seed) internal view returns (SlotType) {
     // TODO: logic to random slot with probability
-    uint index = randomSelect();
-    uint result = coins[index];
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.gaslimit, msg.sender, seed))) % 99;
+    SlotType result = coins[index];
     
-    if(result == 1) {
-      return SlotType.BTC;
-    }
-    else if(result == 2) {
-      return SlotType.ETH;
-    }
-    else if(result == 3) {
-      return SlotType.BNB;
-    }
-    else if(result == 4) {
-      return SlotType.CAKE;
-    }
-    else {
-      return SlotType.DOGE;
-    }
+    return result;
+    
+  }
+
+  function randomSlot3(uint256 seed) internal view returns (SlotType) {
+    // TODO: logic to random slot with probability
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.number, msg.sender, seed))) % 99;
+    SlotType result = coins[index];
+    
+    return result;
     
   }
 
@@ -180,6 +184,8 @@ contract SlotMachine {
     require(rewards > 0, "no reward");
 
     wtf_.transfer(msg.sender, rewards*(10**18));
+
+    playerRewards[msg.sender] = 0;
 
     emit ClaimRewards(msg.sender, rewards);
   }
