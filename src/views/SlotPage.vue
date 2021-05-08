@@ -2,32 +2,23 @@
   <div class="slot-page grid grid-cols-12 gap-8">
     <!-- Rewards Modal -->
     <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'REWARD'" @close="closeModal">
-      <div
-        class="grid grid-cols-4 gap-2"
-        v-for="(slot, index) in results.slot"
-        :key="index"
-      >
-        <div>
-          <img
-            :src="require('@/assets/currency/' + pics[slot.slot1])"
-            alt=""
-          />
+      <div class="flex flex-col space-y-5 px-5">
+        <div
+          class="flex justify-between"
+          :key="index"
+          v-for="(slot, index) in results.slot" 
+        >
+          <div class="slot-result flex flex-row space-x-16">
+            <img :src="require('@/assets/currency/' + pics[slot.slot1])" alt="" />
+            <img :src="require('@/assets/currency/' + pics[slot.slot2])" alt="" />
+            <img :src="require('@/assets/currency/' + pics[slot.slot3])" alt="" />
+          </div>
+          <div class="slot-reward">
+            {{ results.rewards[index] }} WTF
+          </div>
         </div>
-        <div>
-          <img
-            :src="require('@/assets/currency/' + pics[slot.slot2])"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            :src="require('@/assets/currency/' + pics[slot.slot3])"
-            alt=""
-          />
-        </div>
-        <div>{{ results.rewards[index] }} WTF</div>
       </div>
-      <div>Total rewards: {{ results.totalRewards }} WTF</div>
+      <div class="mt-6"><b>Total rewards:</b> {{ results.totalRewards }} WTF</div>
     </Modal>
     <!-- Claim Modal -->
     <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'CLAIM'" @close="closeModal">
