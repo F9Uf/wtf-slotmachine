@@ -233,6 +233,7 @@ export default {
         rewards: [],
         totalRewards: 0,
       },
+      currentAddress: null,
     };
   },
   computed: {
@@ -348,9 +349,15 @@ export default {
     }
   },
   watch: {
-    accountDetail(newV) {
+    async accountDetail(newV) {
       this.wtfBalance = newV.wtfBalance;
-      this.initial()
+      await this.setIsApprove();
+      // fetch reward & history only first time
+      if (this.currentAddress !== newV.address) {
+        this.currentAddress = newV.address
+        await this.rewardsOf();
+        await this.historyOf();
+      }
     },
   },
   mounted() {
