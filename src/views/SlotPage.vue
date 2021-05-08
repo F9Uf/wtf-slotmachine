@@ -324,10 +324,21 @@ export default {
       this.results.slot = res.returnValues.slots.map(e => ({ slot1: e.slot1, slot2: e.slot2, slot3: e.slot3}));
       this.results.rewards = res.returnValues.rewards;
       this.results.totalRewards = res.returnValues.totalReward;
-      // fetch new rewards and history
-      await this.rewardsOf();
-      await this.historyOf();
-      this.openRewardModal()
+
+      // find max rewards
+      let indexMaxReward = 0
+      for (let i = 0; i < this.results.rewards.length; i++) {
+        if (this.results.rewards[i] >= this.results.rewards[indexMaxReward]) {
+          indexMaxReward = i
+        }
+      }
+
+      this.displaySlot = {
+        slot1: Number(this.results.slot[indexMaxReward].slot1),
+        slot2: Number(this.results.slot[indexMaxReward].slot2),
+        slot3: Number(this.results.slot[indexMaxReward].slot3)
+      }
+      this.isSpin = true
     },
     async rewardsOf() {
       this.rewards = await this.$store.dispatch("rewardsOf");
