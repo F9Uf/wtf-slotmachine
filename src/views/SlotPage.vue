@@ -25,9 +25,9 @@
             alt=""
           />
         </div>
-        <div>{{ result.rewards[index] }} WTF</div>
+        <div>{{ results.rewards[index] }} WTF</div>
       </div>
-      <div>Total rewards: {{ result.totalRewards }} WTF</div>
+      <div>Total rewards: {{ results.totalRewards }} WTF</div>
     </Modal>
     <!-- Claim Modal -->
     <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'CLAIM'" @close="closeModal">
@@ -241,7 +241,6 @@ export default {
       return this.$store.getters["getWeb3Type"];
     },
     getBtnDisplay() {
-      console.log(this.web3Type);
       if (this.web3Type === "OK") {
         if (!this.isApprove) return { type: "dark", text: "Approve Contract" };
         else {
@@ -314,22 +313,32 @@ export default {
     },
     async playOnce() {
       const res = await this.$store.dispatch("playOnce");
-      this.results.slot = this.results.slot.push(res.returnValues.slot);
-      this.results.rewards = this.results.rewards.push(res.returnValues.reward);
-      this.results.totalRewards = res.returnValues.reward;
-      console.log(res);
-
+      this.results.slot = [
+          {
+            slot1: res.returnValues.slot.slot1,
+            slot2: res.returnValues.slot.slot2,
+            slot3: res.returnValues.slot.slot3
+          }
+        ]
+      this.results.rewards = [res.returnValues.reward]
+      this.results.totalRewards = res.returnValues.reward
+      console.log(this.results.slot);
+      // fetch new rewards and history
+      await this.rewardsOf();
+      await this.historyOf();
+      this.openRewardModal()
     },
     async playTen() {
       const res = await this.$store.dispatch("playTen");
       this.results.slot = res.returnValues.slot;
       this.results.rewards = res.returnValues.reward;
       this.results.totalRewards = res.returnValues.totalReward;
-      console.log(res);
+      // fetch new rewards and history
+      await this.rewardsOf();
+      await this.historyOf();
     },
     async rewardsOf() {
       this.rewards = await this.$store.dispatch("rewardsOf");
-      console.log(this.rewards);
     },
     async claimRewards() {
       const value = await this.$store.dispatch("claimRewards");
