@@ -196,7 +196,7 @@ export default new Vuex.Store({
         .methods
         .slotOne()
         .send({ from: state.account })
-      return res
+      return res.events.ResultOne
     },
     async playTen({ state }) {
       const slotMachineContract = await getSlotMachineContract(state.web3);
@@ -204,7 +204,7 @@ export default new Vuex.Store({
         .methods
         .slotTen()
         .send({ from: state.account })
-      return res
+      return res.events.ResultBatch
     },
     async rewardsOf({ state }) {
       const slotMachineContract = await getSlotMachineContract(state.web3);
@@ -229,7 +229,11 @@ export default new Vuex.Store({
         .historyOf(state.account)
         .call()
       return history
-    }
+    },
+    // async watchSlotOne({ state }) {
+    //   const slotMachineContract = await getSlotMachineContract(state.web3);
+    //   slotMachineContract.events.ResultOne((err, ))
+    // }
   },
   getters: {
     getModalShow(state) {
