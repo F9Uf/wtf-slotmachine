@@ -65,28 +65,11 @@
       </Card>
     </div>
     <div class="slot-machine col-start-4 col-span-6">
-      <Card class="grid grid-rows-3 grid-flow-col">
-        <Title>Slot Machine</Title>
-        <div class="slot grid grid-cols-11">
-          <!-- <div :class="setLayout(index)" v-for="(slotPic, index) in slotPics" :key="index">
-            <img :src="getSlotCoinPics(slotPic)" alt="" />
-          </div> -->
-          <div
-            class="col-start-1 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
-          >
-            <img src="../assets/currency/btc_slot.png" alt="" />
-          </div>
-          <div
-            class="col-start-5 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
-          >
-            <img src="../assets/currency/btc_slot.png" alt="" />
-          </div>
-          <div
-            class="col-start-9 col-span-3 grid place-items-center bg-blue-900 h-40 rounded-lg"
-          >
-            <img src="../assets/currency/btc_slot.png" alt="" />
-          </div>
-        </div>
+      <Card class="flex flex-col">
+        <Title class="mb-10">Slot Machine</Title>
+        <SlotMachine
+          :isSpin="false"
+        />
         <div class="bottom mt-10">
           <div class="float-right mb-5">Balance: {{ computedBalance }} WTF</div>
           <div class="button space-y-6" v-if="isApprove">
@@ -207,10 +190,12 @@ import Title from "../components/common/Title.vue";
 import Button from "../components/common/Button.vue";
 import Description from "../components/common/Description.vue";
 import Modal from "../components/common/Modal.vue";
+import SlotMachine from '../components/slot/SlotMachine.vue'
+
 import { numberToMoney } from "../utils/moneyFormat";
 
 export default {
-  components: { Card, Title, Button, Description, Modal },
+  components: { Card, Title, Button, Description, Modal, SlotMachine },
   data() {
     return {
       histories: [],

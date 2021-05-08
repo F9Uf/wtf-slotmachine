@@ -5,7 +5,7 @@
       :style="getTranslateY"
     >
       <img
-        :src="require('@/assets/currency/' + item)"
+        :src="require('@/assets/slot/' + item)"
         v-for="(item, index) in items" :key="index"
       >
     </div>
@@ -30,8 +30,8 @@ export default {
   },
   data() {
     return {
-      originalItems: ['wtf.png', 'eth.png', 'eth.png', 'eth.png', 'wtf.png'],
-      items: ['wtf.png', 'eth.png', 'eth.png', 'eth.png', 'wtf.png'],
+      originalItems: ['btc.png', 'eth.png', 'bnb.png', 'cake.png', 'doge.png'],
+      items: ['btc.png', 'eth.png', 'bnb.png', 'cake.png', 'doge.png'],
       translateY: -76,
       currentIndex: 1
     }
