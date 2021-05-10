@@ -22,7 +22,7 @@
     </Modal>
     <!-- Claim Modal -->
     <Modal :title="modalDetail.title" v-if="isShowModal && modalDetail.type === 'CLAIM'" @close="closeModal">
-      <div>Total rewards: {{ computedRewards }} WTF</div>
+      <div>Total rewards: {{ claimReward }} WTF</div>
     </Modal>
     <div class="history col-start-1 col-span-3">
       <Card>
@@ -107,7 +107,7 @@
             {{ getBtnDisplay.text }}
           </Button>
           <div class="button" v-if="isApprove">
-            <Button :type="getBtnDisplay[2].type" @click="claimRewards(); openClaimModal();">
+            <Button :type="getBtnDisplay[2].type" @click="claimRewards();">
               {{ getBtnDisplay[2].text }}
             </Button>
           </div>
@@ -206,6 +206,7 @@ export default {
       isApprove: false,
       wtfBalance: 0,
       rewards: 0,
+      claimReward: 0,
       results: {
         slot: [],
         rewards: [],
@@ -346,6 +347,7 @@ export default {
     async claimRewards() {
       await this.$store.dispatch("claimRewards");
       await this.rewardsOf();
+      await this.openClaimModal();
     },
     async historyOf() {
       let tempHist = await this.$store.dispatch("historyOf");
@@ -369,6 +371,9 @@ export default {
         await this.historyOf();
       }
     },
+    rewards(newV, oldV) {
+      this.claimReward = oldV;
+    }
   },
   mounted() {
     this.wtfBalance = this.accountDetail.wtfBalance;
