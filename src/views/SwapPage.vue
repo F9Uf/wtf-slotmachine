@@ -93,6 +93,8 @@ export default {
       } else if (this.token1.currency === 'wtf') {
         await this.$store.dispatch('swapTokenToEth', this.token1.amount)
       }
+      await this.$store.dispatch('getEthBalance')
+      await this.$store.dispatch('getWtfBalance')
       this.token1.amount = 0;
       this.token2.amount = 0;
     },
