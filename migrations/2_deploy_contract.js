@@ -21,8 +21,8 @@ module.exports = async function (deployer, network, accounts) {
   const smWtfBalance = await wtfToken.balanceOf(sm.address)
   console.log('balance of sm contract', smWtfBalance.toString());
 
-  // send 0.5M token to DEX, send 90 eth to DEX
+  // send 90 token to DEX, send 90 eth to DEX
   await wtfToken.approve(dex.address, '250000000000000000000000000000000000');
-  const liquidity = await dex.init('500000000000000000000000', { from: accounts[0], value: '90000000000000000000' });
+  const liquidity = await dex.init('90000000000000000000', { from: accounts[0], value: '90000000000000000000' });
   console.log('Dex liquidity', liquidity.toString());
 }
