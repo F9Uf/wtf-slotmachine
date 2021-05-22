@@ -294,6 +294,7 @@ export default {
       this.$store.dispatch('openModalReward');
     },
     async approveContract() {
+      if (this.web3Type === "WRONG-NET") return
       await this.$store.dispatch("approveSlotMachineContract");
     },
     async setIsApprove() {
