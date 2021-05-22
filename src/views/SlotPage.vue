@@ -65,7 +65,7 @@
       </Card>
     </div>
     <div class="slot-machine col-start-4 col-span-6">
-      <Card class="flex flex-col">
+      <Card class="flex flex-col h-full justify-between">
         <Title class="mb-10">Slot Machine</Title>
         <SlotMachine
           :isSpin="isSpin"
