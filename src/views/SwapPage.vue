@@ -66,10 +66,11 @@ export default {
       if (this.token1.currency === 'eth') {
         const estimateToken = await this.$store.dispatch('estimateEthToToken', value)
         this.token2.amount = estimateToken.toNumber()
-        
+        this.priceRate = this.token2.amount !== 0 ? this.token1.amount / this.token2.amount : 0
       } else if (this.token1.currency === 'wtf') {
         const estimateEth = await this.$store.dispatch('estimateTokenToEth', value)
         this.token2.amount = estimateEth.toNumber()
+        this.priceRate = this.token1.amount !== 0 ? this.token2.amount / this.token1.amount : 0
       }
     },
     async switchToken() {
