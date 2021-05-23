@@ -3,8 +3,8 @@ const SlotMachine = artifacts.require("SlotMachine");
 const DEX = artifacts.require("DEX");
 
 module.exports = async function (deployer, network, accounts) {
-  // deploy token with name, symbol, total coins (2.5M)
-  await deployer.deploy(WTFERC20, 'WTF Coin', 'WTF', 2500000);
+  // deploy token with name, symbol, total coins (25M)
+  await deployer.deploy(WTFERC20, 'WTF Coin', 'WTF', 25000000);
   const wtfToken = await WTFERC20.deployed();
 
   // deploy SlotMachine contract with pricePerSlot(1wtf), probability of slot, token address
@@ -16,13 +16,13 @@ module.exports = async function (deployer, network, accounts) {
   const dex = await DEX.deployed();
 
 
-  // send 1M token to Slotmachine
-  await wtfToken.transfer(sm.address, '10000000000000000000000')
+  // send 10M token to Slotmachine
+  await wtfToken.transfer(sm.address, '100000000000000000000000')
   const smWtfBalance = await wtfToken.balanceOf(sm.address)
   console.log('balance of sm contract', smWtfBalance.toString());
 
-  // send 90 token to DEX, send 90 eth to DEX
+  // send 500,000 token to DEX, send 50 eth to DEX
   await wtfToken.approve(dex.address, '250000000000000000000000000000000000');
-  const liquidity = await dex.init('90000000000000000000', { from: accounts[0], value: '90000000000000000000' });
+  const liquidity = await dex.init('500000000000000000000000', { from: accounts[0], value: '50000000000000000000' });
   console.log('Dex liquidity', liquidity.toString());
 }
