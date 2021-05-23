@@ -19,7 +19,7 @@
       </div>
       <div class="rate my-3 flex justify-between" v-if="priceRate !== 0">
         <Description>Price</Description>
-        <Description v-if="token1.currency === 'eth'">{{ priceRate.toFixed(6) }} ETH per WTF</Description>
+        <Description>{{ priceRate.toFixed(6) }} ETH per WTF</Description>
       </div>
       <Button :type="getBtnDisplay.type" @click="swap()" v-if="isApprove">{{ getBtnDisplay.text }}</Button>
       <Button :type="getBtnDisplay.type" @click="approveDex()" v-if="!isApprove">{{ getBtnDisplay.text }}</Button>
