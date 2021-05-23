@@ -131,7 +131,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/btc.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">45,455 WTF</div>
+          <div class="col-start-4 col-span-3">10,000 WTF</div>
         </div>
         <div class="grid grid-cols-6 gap-2">
           <div class="col-start-1 col-span-1">
@@ -143,7 +143,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/eth2.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">456 WTF</div>
+          <div class="col-start-4 col-span-3">1,000 WTF</div>
         </div>
         <div class="grid grid-cols-6 gap-2">
           <div class="col-start-1 col-span-1">
@@ -155,7 +155,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/bnb.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">83 WTF</div>
+          <div class="col-start-4 col-span-3">100 WTF</div>
         </div>
         <div class="grid grid-cols-6 gap-2">
           <div class="col-start-1 col-span-1">
@@ -167,7 +167,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/cake.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">46 WTF</div>
+          <div class="col-start-4 col-span-3">10 WTF</div>
         </div>
         <div class="grid grid-cols-6 gap-2">
           <div class="col-start-1 col-span-1">
@@ -179,7 +179,7 @@
           <div class="col-start-3 col-span-1">
             <img src="../assets/currency/doge.png" alt="" />
           </div>
-          <div class="col-start-4 col-span-3">28 WTF</div>
+          <div class="col-start-4 col-span-3">5 WTF</div>
         </div>
       </div>
     </div>
