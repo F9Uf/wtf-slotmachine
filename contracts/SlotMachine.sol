@@ -83,7 +83,7 @@ contract SlotMachine {
     emit ResultOne(newOneSlot, reward);
   }
 
-function slotTen() public payable {
+  function slotTen() public payable {
     uint256 totalPaid = 10 * pricePerSlot;
     uint256 balnace = wtf_.balanceOf(msg.sender);
     require(balnace >= totalPaid, "Amount too low");
@@ -139,44 +139,26 @@ function slotTen() public payable {
     }
     return rewardsPerRank[0];
   }
-  
-  // function randomSelect() internal view returns (uint) {
-  //   uint select = uint(keccak256(abi.encodePacked(block.timestamp / block.difficulty))) % 99;
-  //   uint random;
-  //   if (select % 2 == 0) {
-  //       random = uint(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number))) % 99;
-  //   }
-  //   else {
-  //       random = uint(keccak256(abi.encodePacked(block.timestamp +  block.number))) % 99;
-  //   }
-  //   return random;
-  // }
 
   function randomSlot1(uint256 seed) internal view returns (SlotType) {
-    // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, seed))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, seed))) % 100;
     SlotType result = coins[index];
     
     return result;
-    
   }
 
   function randomSlot2(uint256 seed) internal view returns (SlotType) {
-    // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.gaslimit, msg.sender, seed))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.gaslimit, msg.sender, seed))) % 100;
     SlotType result = coins[index];
     
     return result;
-    
   }
 
   function randomSlot3(uint256 seed) internal view returns (SlotType) {
-    // TODO: logic to random slot with probability
-    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.number, msg.sender, seed))) % 99;
+    uint index = uint(keccak256(abi.encodePacked(block.timestamp + block.number, msg.sender, seed))) % 100;
     SlotType result = coins[index];
     
     return result;
-    
   }
 
   function claimRewards() public {
