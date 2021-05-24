@@ -4,4 +4,4 @@ dist
 dist-ssr
 *.local
 
-# src/contracts
+src/contracts
