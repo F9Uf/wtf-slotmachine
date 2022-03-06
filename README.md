@@ -41,3 +41,15 @@ The CPE494 Blockchain Technology term project.
 `/src` is the frontend source code folder
 
 `/src/contracts` is the built smart contract source code folder
+
+## Architecture
+![image](https://user-images.githubusercontent.com/33904716/156925306-748b3b53-f091-47fb-afe4-a40bbddc5174.png)
+
+## Preview
+### Dex
+![image](https://user-images.githubusercontent.com/33904716/156925373-4d869e22-de24-42a8-9457-f89b0dea2571.png)
+
+### Slot machine
+![image](https://user-images.githubusercontent.com/33904716/156925449-19217968-aa1b-4698-a17e-f8c19557f60d.png)
+![image](https://user-images.githubusercontent.com/33904716/156925476-6062f6bb-8b7f-4659-89eb-6841505295b5.png)
+
